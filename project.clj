@@ -74,7 +74,7 @@
   :ragtime
   {:migrations ragtime.sql.files/migrations,
    :database
-   "jdbc:postgresql://localhost/milkilo_tracker?user=db_user_name_here&password=db_user_password_here"}
+   "jdbc:postgresql://localhost/milkilo_tracker?user=devadmin&password=devpassword"}
   :cljsbuild
   {:builds
    {:app

@@ -3,7 +3,9 @@
 (def db-spec
   {:subprotocol "postgresql"
    :subname "//localhost/milkilo_tracker"
-   :user "db_user_name_here"
-   :password "db_user_password_here"})
+   :user "devadmin"
+   :password "devpassword"
+   }
+  )
 
 
