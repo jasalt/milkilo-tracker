@@ -7,6 +7,7 @@
   "http://example.com/FIXME"
   :dependencies
   [[org.clojure/clojurescript "0.0-2644"]
+   [figwheel "0.2.2-SNAPSHOT"]
    [prone "0.8.0"]
    [log4j
     "1.2.17"
@@ -26,6 +27,7 @@
    [cljs-ajax "0.3.4"]
    [lib-noir "0.9.5"]
    [org.clojure/clojure "1.6.0"]
+   [clj-time "0.9.0"]
    [environ "1.0.0"]
    [ring-server "0.3.1"]
    [reagent-forms "0.2.9"]
@@ -40,6 +42,7 @@
    [lein-environ "1.0.0"]
    [lein-ancient "0.5.5"]
    [lein-cljsbuild "1.0.4"]
+   [lein-figwheel "0.2.2-SNAPSHOT"]
    [ragtime/ragtime.lein "0.3.6"]]
   :ring
   {:handler milkilo-tracker.handler/app,
@@ -88,4 +91,25 @@
       :pretty-print true}}}}
   :uberjar-name
   "milkilo-tracker.jar"
-  :min-lein-version "2.0.0")
+  :min-lein-version "2.0.0"
+  :figwheel
+  {
+   :http-server-root "public" ;; this will be in resources/
+   :server-port 3449          ;; default
+   :css-dirs ["resources/public/css"]
+
+   ;; Server Ring Handler (optional)
+   ;; if you want to embed a ring handler into the figwheel http-kit
+   ;; server
+   :ring-handler milkilo-tracker.handler/app
+
+   :open-file-command "file-opener"
+
+   ;; if you want to disable the REPL
+   ;; :repl false
+
+   ;; to configure a different figwheel logfile path
+   ;; :server-logfile "tmp/logs/figwheel-logfile.log"
+
+   }
+  )

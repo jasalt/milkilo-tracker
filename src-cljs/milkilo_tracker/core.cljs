@@ -3,6 +3,7 @@
             [secretary.core :as secretary]
             [reagent-forms.core :refer [bind-fields]]
             [ajax.core :refer [POST, GET]]
+            [figwheel.client :as fw]
             )
   (:require-macros [secretary.core :refer [defroute]])
   )
@@ -11,42 +12,19 @@
   (js/console.log "Log: " (pr-str x))
   (js/console.log  x))
 
-(def state (atom {:saved? false}
-                 {:data []}
-                 {:entry-id nil}
-                 {:bread nil}))
+(defonce state (atom {:saved? false}
+                     {:data []}
+                     {:entry-id nil}
+                     {:bread nil}))
 
 (defn row [label & body]
   [:div.row.top-margin
    [:div.col-md-2 [:span.span-lg (str label ":")]]
    [:div.col-md-3 body]])
 
-(defn breadcrumbs []
-  [:ol.breadcrumb
-   [:li {:class (when (= home (:page @state)) "active")}
-    [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
 
-   (if (@state :bread)
-     [:li.active (@state :bread)])])
 
-(defn navbar []
-  [:div.navbar.navbar-default
-   [:div.navbar-collapse.collapse
-    [:ul.nav.navbar-nav
-     [:li {:class (when (= home (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
 
-     [:li {:class (when (= add-entry (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää"]]
-
-     [:li {:class (when (= edit-entry (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/entry/1")} "Muokkaa"]]
-
-     [:li {:class (when (= history (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/history")} "Historia"]]
-
-     [:li {:class (when (= about (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/about")} "Tietoja"]]]]])
 
 (defn text-input [id label]
   (row label
@@ -63,9 +41,9 @@
   [:div
    (text-input :date "Päivämäärä")
    (selection-buttons "Merkinnän tyyppi" :type
-                   [:type-a "Tyyppi A"]
-                   [:type-b "Tyyppi B"]
-                   [:type-c "Tyyppi C"])
+                      [:type-a "Tyyppi A"]
+                      [:type-b "Tyyppi B"]
+                      [:type-c "Tyyppi C"])
    (text-input :value "Arvo")])
 
 (defn save-entry [new-entry]
@@ -91,7 +69,7 @@
       ^{:key item} [:li [:a {:on-click #(secretary/dispatch! (str "#/entry/" (item :id)))}
                          (str "Item: " (item :id) " Date: " (item :date))]])]])
 (defn cancel []
-  
+
   [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
    {:on-click #(secretary/dispatch! "#/")} "Peruuta"]
   )
@@ -105,7 +83,7 @@
        (if (:saved? @state)
          [:p "Saved"]
          [:button.btn.btn-success.btn-lg.btn-block.top-margin {:type "submit"
-                                          :onClick (save-entry new-entry)}
+                                                               :onClick (save-entry new-entry)}
           "Tallenna"])
        [cancel]
        ])))
@@ -124,7 +102,7 @@
      :on-click #(js/alert "TODO: remove")} "Poista"]])
 
 (defn home []
-  [:div 
+  [:div
    [:button.btn.btn-lg.btn-primary.btn-block
     {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
    [:div.chart-container
@@ -138,7 +116,7 @@
       [:p "Viimeisin mittaus"]
       [:a {:on-click #(secretary/dispatch! (str "#/entry/" (last-entry :id)))}
        (str "Item: " (last-entry :id) " Date: " (last-entry :date)) ]]
-     
+
      [:p "Ei mittauksia.."])])
 
 (defn page []
@@ -163,9 +141,50 @@
 (defroute "/about" []
   (swap! state assoc :page about :bread "Tietoja"))
 
+(defn navbar []
+  [:div.navbar.navbar-default
+   [:div.navbar-collapse.collapse
+    [:ul.nav.navbar-nav
+     [:li {:class (when (= home (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
+
+     [:li {:class (when (= add-entry (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää"]]
+
+     [:li {:class (when (= edit-entry (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/entry/1")} "Muokkaa"]]
+
+     [:li {:class (when (= history (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/history")} "Historia"]]
+
+     [:li {:class (when (= about (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/about")} "Tietoja"]]]]])
+
+(defn breadcrumbs []
+  [:ol.breadcrumb
+   [:li {:class (when (= home (:page @state)) "active")}
+    [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
+
+   (if (@state :bread)
+     [:li.active (@state :bread)])])
+
+(defn render-stuff []
+  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
+  (reagent/render-component [page] (.getElementById js/document "app"))
+  )
+
 (defn init! []
   (swap! state assoc :page home)
   (GET "/entries" {:handler #(swap! state assoc :data (% :data))})
 
-  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
-  (reagent/render-component [page] (.getElementById js/document "app")))
+  (render-stuff)
+  (enable-console-print!)
+  (fw/start
+   {
+    ;; configure a websocket url if yor are using your own server
+    :websocket-url "ws://localhost:3449/figwheel-ws"
+
+    ;; optional callback
+    :on-jsload (fn [] (render-stuff))
+    })
+  )
