@@ -174,17 +174,22 @@
   )
 
 (defn init! []
+  (js/console.log "Reload")
   (swap! state assoc :page home)
   (GET "/entries" {:handler #(swap! state assoc :data (% :data))})
 
   (render-stuff)
   (enable-console-print!)
-  (fw/start
-   {
-    ;; configure a websocket url if yor are using your own server
-    :websocket-url "ws://localhost:3449/figwheel-ws"
-
-    ;; optional callback
-    :on-jsload (fn [] (render-stuff))
-    })
+  
   )
+
+(fw/start
+  {
+   ;; configure a websocket url if yor are using your own server
+   :websocket-url "ws://localhost:3449/figwheel-ws"
+   
+   ;; optional callback
+   :on-jsload (fn []
+                (init!)
+                )
+   })
