@@ -17,8 +17,8 @@
                  {:bread nil}))
 
 (defn row [label & body]
-  [:div.row
-   [:div.col-md-2 [:span label]]
+  [:div.row.top-margin
+   [:div.col-md-2 [:span.span-lg (str label ":")]]
    [:div.col-md-3 body]])
 
 (defn breadcrumbs []
@@ -49,20 +49,20 @@
       [:a {:on-click #(secretary/dispatch! "#/about")} "Tietoja"]]]]])
 
 (defn text-input [id label]
-  (row label [:input.form-control {:field :text :id id}]))
-
-(defn selection-list [label id & items]
   (row label
-       [:div.btn-group {:field :single-select :id id}
+       [:input.form-control.input-lg {:field :text :id id}]
+       ))
+
+(defn selection-buttons [label id & items]
+  (row label
+       [:div.text-center.top-margin {:field :single-select :id id}
         (for [[k label] items]
-          [:button.btn.btn-default {:key k} label])]))
+          [:button.btn.btn-default.btn-lg {:key k} label])]))
 
 (def form
   [:div
-   [:h1 "Lisää uusi merkintä"]
    (text-input :date "Päivämäärä")
-
-   (selection-list "Merkinnän tyyppi" :type
+   (selection-buttons "Merkinnän tyyppi" :type
                    [:type-a "Tyyppi A"]
                    [:type-b "Tyyppi B"]
                    [:type-c "Tyyppi C"])
@@ -90,6 +90,11 @@
     (for [item (@state :data)]
       ^{:key item} [:li [:a {:on-click #(secretary/dispatch! (str "#/entry/" (item :id)))}
                          (str "Item: " (item :id) " Date: " (item :date))]])]])
+(defn cancel []
+  
+  [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
+   {:on-click #(secretary/dispatch! "#/")} "Peruuta"]
+  )
 
 (defn add-entry []
   (let [new-entry (atom {})]
@@ -99,10 +104,11 @@
         (fn [_ _ _] (swap! state assoc :saved? false) nil)]
        (if (:saved? @state)
          [:p "Saved"]
-         [:button {:type "submit"
-                   :class "btn btn-success"
-                   :onClick (save-entry new-entry)}
-          "Tallenna"])])))
+         [:button.btn.btn-success.btn-lg.btn-block.top-margin {:type "submit"
+                                          :onClick (save-entry new-entry)}
+          "Tallenna"])
+       [cancel]
+       ])))
 
 (defn edit-entry [entry-id]
   [:div
@@ -119,7 +125,7 @@
 
 (defn home []
   [:div 
-   [:button.btn.btn-lg.btn-success.btn-block
+   [:button.btn.btn-lg.btn-primary.btn-block
     {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
    [:div.chart-container
     [:p "Diagram:"]
