@@ -2,7 +2,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary]
             [reagent-forms.core :refer [bind-fields]]
-            [ajax.core :refer [POST]]
+            [ajax.core :refer [POST, GET]]
             )
   (:require-macros [secretary.core :refer [defroute]])
   )
@@ -50,17 +50,20 @@
 (def form
   [:div
    [:h1 "Lisää uusi merkintä"]
-   (selection-list "Merkinnän tyyppi" :entry-type
+   (text-input :date "Päivämäärä")
+   (selection-list "Merkinnän tyyppi" :type
                    [:type-a "Tyyppi A"]
                    [:type-b "Tyyppi B"]
                    [:type-c "Tyyppi C"])
    (text-input :value "Arvo")])
 
-(defn save-doc [doc]
+(defn save-entry [new-entry]
   (fn []
-    (POST (str js/context "/save")
-          {:params {:doc @doc}
-           :handler (fn [_] (swap! state assoc :saved? true))})))
+    (POST (str js/context "/entry")
+          {:params {:new-entry @new-entry}
+           :handler (fn [resp]
+                      (.log js/console (str "Response status: " (:status resp)))
+                      (swap! state assoc :saved? true))})))
 
 (defn about []
   [:div
@@ -74,16 +77,16 @@
   )
 
 (defn add-entry []
-  (let [doc (atom {})]
+  (let [new-entry (atom {})]
     (fn []
       [:div
-       [bind-fields form doc
+       [bind-fields form new-entry
         (fn [_ _ _] (swap! state assoc :saved? false) nil)]
        (if (:saved? @state)
          [:p "Saved"]
          [:button {:type "submit"
                    :class "btn btn-success"
-                   :onClick (save-doc doc)}
+                   :onClick (save-entry new-entry)}
           "Tallenna"])])))
 
 (defn edit-entry [entry-id]
@@ -123,8 +126,11 @@
   (swap! state assoc k v))
 
 (defroute "/" []
-  (.log js/console "hi!")
-  (put! :page home))
+  (.log js/console "getting")
+  (.log js/console (str (GET "/entries")))
+
+  (put! :page home)
+  )
 
 (defroute "/entry/:id" {:as params}
   (.log js/console (str "hi! " (params :id)))
