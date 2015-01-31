@@ -7,8 +7,13 @@
   (:require-macros [secretary.core :refer [defroute]])
   )
 
+(defn log [x]
+  (js/console.log "Log: " (pr-str x))
+  (js/console.log  x)
+  )
+
 (def state (atom {:saved? false}
-                 {:entries []}
+                 {:data []}
                  {:entry-id nil}))
 
 (defn row [label & body]
@@ -112,10 +117,10 @@
      :on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
    [:h2 "Entry list"]
    [:ul
-    [:li [:a {:on-click #(secretary/dispatch! "#/entry/0")} "Add"]]
-    [:li [:a {:on-click #(secretary/dispatch! "#/entry/1")} "Some"]]
-    [:li [:a {:on-click #(secretary/dispatch! "#/entry/2")} "Entries"]]
-    [:li [:a {:on-click #(secretary/dispatch! "#/entry/3")} "Here"]]]])
+
+    (for [item (@state :data)]
+      ^{:key item} [:li [:a {:on-click #(secretary/dispatch! (str "#/entry/" (item :id)))}
+                         (str "Item: " (item :id) " Date: " (item :date))]])]])
 
 (defn page []
   [(:page @state)])
@@ -126,14 +131,10 @@
   (swap! state assoc k v))
 
 (defroute "/" []
-  (.log js/console "getting")
-  (.log js/console (str (GET "/entries")))
-
-  (put! :page home)
+  (swap! state assoc :page home)
   )
 
 (defroute "/entry/:id" {:as params}
-  (.log js/console (str "hi! " (params :id)))
   (swap! state assoc :page edit-entry :entry-id (params :id)))
 
 (defroute "/add-entry" []
@@ -148,5 +149,7 @@
 
 (defn init! []
   (swap! state assoc :page home)
+  (GET "/entries" {:handler #(swap! state assoc :data (% :data))})
+
   (reagent/render-component [navbar] (.getElementById js/document "navbar"))
   (reagent/render-component [page] (.getElementById js/document "app")))

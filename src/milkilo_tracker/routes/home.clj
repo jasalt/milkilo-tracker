@@ -25,7 +25,8 @@
 
 (defn get-entries []
   (pprint "Return mock entries")
-  {:status "ok" :data mock-entries}
+  {:status "Get WIP"
+   :data mock-entries}
   )
 
 (defn save-entry [doc]
@@ -38,6 +39,6 @@
 
 (defroutes home-routes
   (GET "/" [] (home-page))
-  ;;(GET "/entries" [] (json {:response "Should get entries"}) );;(get-entries)
+  (GET "/entries" [] (edn (get-entries)))
   (POST "/entry" {:keys [body-params]} (edn (save-entry body-params)))
   )
