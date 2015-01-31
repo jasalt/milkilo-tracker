@@ -9,8 +9,7 @@
 
 (defn log [x]
   (js/console.log "Log: " (pr-str x))
-  (js/console.log  x)
-  )
+  (js/console.log  x))
 
 (def state (atom {:saved? false}
                  {:data []}
@@ -23,17 +22,12 @@
    [:div.col-md-3 body]])
 
 (defn breadcrumbs []
-  (js/console.log (@state :bread))
   [:ol.breadcrumb
-   
    [:li {:class (when (= home (:page @state)) "active")}
     [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
 
    (if (@state :bread)
-     [:li.active (@state :bread)]
-     )
-   ]
-  )
+     [:li.active (@state :bread)])])
 
 (defn navbar []
   [:div.navbar.navbar-default
@@ -67,6 +61,7 @@
   [:div
    [:h1 "Lisää uusi merkintä"]
    (text-input :date "Päivämäärä")
+
    (selection-list "Merkinnän tyyppi" :type
                    [:type-a "Tyyppi A"]
                    [:type-b "Tyyppi B"]
@@ -89,8 +84,12 @@
 (defn history []
   [:div
    [:h1 "Historia"]
-   [:p "Add cool NVD3 diagrams and stuff"]]
-  )
+   [:p "Add cool NVD3 diagrams and stuff"]
+
+   [:ul
+    (for [item (@state :data)]
+      ^{:key item} [:li [:a {:on-click #(secretary/dispatch! (str "#/entry/" (item :id)))}
+                         (str "Item: " (item :id) " Date: " (item :date))]])]])
 
 (defn add-entry []
   (let [new-entry (atom {})]
@@ -116,34 +115,33 @@
      :on-click #(secretary/dispatch! "#/")} "Peruuta"]
    [:button
     {:class "btn btn-lg btn-danger"
-     :on-click #(js/alert "TODO: remove")} "Poista"]
-   ]
-  )
+     :on-click #(js/alert "TODO: remove")} "Poista"]])
 
 (defn home []
-  [:div
-   [:h1 "Dashboard"]
-   [:button
-    {:class "btn btn-lg btn-success"
-     :on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
-   [:h2 "Entry list"]
-   [:ul
+  [:div 
+   [:button.btn.btn-lg.btn-success.btn-block
+    {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
+   [:div.chart-container
+    [:p "Diagram:"]
+    [:img.img-responsive
+     {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
+      :on-click #(secretary/dispatch! "#/history")}]]
 
-    (for [item (@state :data)]
-      ^{:key item} [:li [:a {:on-click #(secretary/dispatch! (str "#/entry/" (item :id)))}
-                         (str "Item: " (item :id) " Date: " (item :date))]])]])
+   (if-let [last-entry (first (@state :data))]
+     [:div
+      [:p "Viimeisin mittaus"]
+      [:a {:on-click #(secretary/dispatch! (str "#/entry/" (last-entry :id)))}
+       (str "Item: " (last-entry :id) " Date: " (last-entry :date)) ]]
+     
+     [:p "Ei mittauksia.."])])
 
 (defn page []
   [(:page @state)])
 
 (secretary/set-config! :prefix "#")
 
-(defn put! [k v]
-  (swap! state assoc k v))
-
 (defroute "/" []
-  (swap! state assoc :page home :bread nil)
-  )
+  (swap! state assoc :page home :bread nil))
 
 (defroute "/entry/:id" {:as params}
   (swap! state assoc :page edit-entry :entry-id (params :id) :bread "Muokkaa merkintää"))
