@@ -14,34 +14,45 @@
 
 (def state (atom {:saved? false}
                  {:data []}
-                 {:entry-id nil}))
+                 {:entry-id nil}
+                 {:bread nil}))
 
 (defn row [label & body]
   [:div.row
    [:div.col-md-2 [:span label]]
    [:div.col-md-3 body]])
 
+(defn breadcrumbs []
+  (js/console.log (@state :bread))
+  [:ol.breadcrumb
+   
+   [:li {:class (when (= home (:page @state)) "active")}
+    [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
+
+   (if (@state :bread)
+     [:li.active (@state :bread)]
+     )
+   ]
+  )
+
 (defn navbar []
-  [:div.navbar.navbar-inverse.navbar-fixed-top
-   [:div.container
-    [:div.navbar-header
-     [:a.navbar-brand {:href "#/"} "milkilo-tracker"]]
-    [:div.navbar-collapse.collapse
-     [:ul.nav.navbar-nav
-      [:li {:class (when (= home (:page @state)) "active")}
-       [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
+  [:div.navbar.navbar-default
+   [:div.navbar-collapse.collapse
+    [:ul.nav.navbar-nav
+     [:li {:class (when (= home (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
 
-      [:li {:class (when (= add-entry (:page @state)) "active")}
-       [:a {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää"]]
+     [:li {:class (when (= add-entry (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää"]]
 
-      [:li {:class (when (= edit-entry (:page @state)) "active")}
-       [:a {:on-click #(secretary/dispatch! "#/entry/1")} "Muokkaa"]]
+     [:li {:class (when (= edit-entry (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/entry/1")} "Muokkaa"]]
 
-      [:li {:class (when (= history (:page @state)) "active")}
-       [:a {:on-click #(secretary/dispatch! "#/history")} "Historia"]]
+     [:li {:class (when (= history (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/history")} "Historia"]]
 
-      [:li {:class (when (= about (:page @state)) "active")}
-       [:a {:on-click #(secretary/dispatch! "#/about")} "Tietoja"]]]]]])
+     [:li {:class (when (= about (:page @state)) "active")}
+      [:a {:on-click #(secretary/dispatch! "#/about")} "Tietoja"]]]]])
 
 (defn text-input [id label]
   (row label [:input.form-control {:field :text :id id}]))
@@ -131,25 +142,26 @@
   (swap! state assoc k v))
 
 (defroute "/" []
-  (swap! state assoc :page home)
+  (swap! state assoc :page home :bread nil)
   )
 
 (defroute "/entry/:id" {:as params}
-  (swap! state assoc :page edit-entry :entry-id (params :id)))
+  (swap! state assoc :page edit-entry :entry-id (params :id) :bread "Muokkaa merkintää"))
 
 (defroute "/add-entry" []
   (.log js/console "Add entry-view")
-  (put! :page add-entry))
+  (swap! state assoc :page add-entry :bread "Lisää merkintä"))
 
 (defroute "/history" []
   (.log js/console "History-view")
-  (put! :page history))
+  (swap! state assoc :page history :bread "Historia"))
 
-(defroute "/about" [] (put! :page about))
+(defroute "/about" []
+  (swap! state assoc :page about :bread "Tietoja"))
 
 (defn init! []
   (swap! state assoc :page home)
   (GET "/entries" {:handler #(swap! state assoc :data (% :data))})
 
-  (reagent/render-component [navbar] (.getElementById js/document "navbar"))
+  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
   (reagent/render-component [page] (.getElementById js/document "app")))
