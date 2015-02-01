@@ -101,7 +101,7 @@
     {:class "btn btn-lg btn-danger"
      :on-click #(js/alert "TODO: remove")} "Poista"]])
 
-(defn home []
+(defn dashboard []
   [:div
    [:button.btn.btn-lg.btn-primary.btn-block
     {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
@@ -125,7 +125,7 @@
 (secretary/set-config! :prefix "#")
 
 (defroute "/" []
-  (swap! state assoc :page home :bread nil))
+  (swap! state assoc :page dashboard :bread nil))
 
 (defroute "/entry/:id" {:as params}
   (swap! state assoc :page edit-entry :entry-id (params :id) :bread "Muokkaa merkintää"))
@@ -141,28 +141,9 @@
 (defroute "/about" []
   (swap! state assoc :page about :bread "Tietoja"))
 
-(defn navbar []
-  [:div.navbar.navbar-default
-   [:div.navbar-collapse.collapse
-    [:ul.nav.navbar-nav
-     [:li {:class (when (= home (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
-
-     [:li {:class (when (= add-entry (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää"]]
-
-     [:li {:class (when (= edit-entry (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/entry/1")} "Muokkaa"]]
-
-     [:li {:class (when (= history (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/history")} "Historia"]]
-
-     [:li {:class (when (= about (:page @state)) "active")}
-      [:a {:on-click #(secretary/dispatch! "#/about")} "Tietoja"]]]]])
-
 (defn breadcrumbs []
   [:ol.breadcrumb
-   [:li {:class (when (= home (:page @state)) "active")}
+   [:li {:class (when (= dashboard (:page @state)) "active")}
     [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
 
    (if (@state :bread)
@@ -175,7 +156,7 @@
 
 (defn init! []
   (js/console.log "Reload")
-  (swap! state assoc :page home)
+  (swap! state assoc :page dashboard)
   (GET "/entries" {:handler #(swap! state assoc :data (% :data))})
 
   (render-stuff)
