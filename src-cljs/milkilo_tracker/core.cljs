@@ -2,24 +2,22 @@
 (ns milkilo-tracker.core
   (:require
    [milkilo-tracker.session :as session]
-   [milkilo-tracker.utils :refer [log]]
+   [reagent.core :as reagent :refer [atom]]
    
+   [milkilo-tracker.utils :refer [log]]
+   [figwheel.client :as fw]
+   
+   [secretary.core :as secretary :refer-macros [defroute]]
+   [ajax.core :refer [GET]]
+   [goog.events :as events]
+   [goog.history.EventType :as EventType]
+
    [milkilo-tracker.pages.dashboard  :refer [dashboard-page]]
    [milkilo-tracker.pages.add        :refer [add-entry-page]]
    [milkilo-tracker.pages.edit       :refer [edit-entry-page]]
    [milkilo-tracker.pages.history    :refer [history-page]]
    [milkilo-tracker.pages.about      :refer [about-page]]
    [milkilo-tracker.pages.components :refer [breadcrumbs]]
-
-   [reagent.core :as reagent :refer [atom]]
-   
-   [ajax.core :refer [GET]]
-   [figwheel.client :as fw]
-
-   [goog.events :as events]
-   [goog.history.EventType :as EventType]
-   
-   [secretary.core :as secretary :refer-macros [defroute]]
    ))
 
 ;; TODO fix

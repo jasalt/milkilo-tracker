@@ -4,12 +4,6 @@
   (:require
    [reagent.core :as reagent :refer [atom]]))
 
-;; (defonce state (atom {:saved? false
-;;                       :data []
-;;                       :entry-id nil
-;;                       :bread nil
-;;                       }))
-
 (def state (atom {
                   :test "hello world"
                   }))
