@@ -39,7 +39,7 @@
 
 (defn breadcrumbs []
   [:ol.breadcrumb
-   [:li {:class (when (= dashboard-page (session/get :current-page)) "active")}
-    [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
+   ;; [:li {:class (when (= dashboard-page (session/get :current-page)) "active")}
+   ;;  [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
    (if-let [bread (session/get :bread)]
      [:li.active bread])])

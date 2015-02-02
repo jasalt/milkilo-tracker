@@ -1,13 +1,13 @@
 (ns milkilo-tracker.pages.edit-entry
   (:require
+   [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    [secretary.core :refer [dispatch!]]
-
    ))
 
 (defn edit-entry [entry-id]
   [:div
-   [:h1 (str "Muokkaa merkintää " (@state :entry-id))]
+   [:h1 (str "Muokkaa merkintää " (session/get :entry-id))]
    [:button
     {:class "btn btn-lg btn-success"
      :on-click #(dispatch! "#/")} "Tallenna"]
