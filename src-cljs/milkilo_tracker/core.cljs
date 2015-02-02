@@ -9,7 +9,7 @@
    ;;[milkilo-tracker.pages.history :refer [history]]
    ;;[milkilo-tracker.pages.about :refer [about]]
 
-   ;;[milkilo-tracker.pages.components :refer [breadcrumbs]]
+   [milkilo-tracker.pages.components :refer [breadcrumbs]]
 
    [reagent.core :as reagent :refer [atom]]
    ;;[reagent-forms.core :refer [bind-fields]]
@@ -26,19 +26,19 @@
   ;;(:require-macros [secretary.core :refer [defroute]])
   )
 
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+;; (defn hook-browser-navigation! []
+;;   (doto (History.)
+;;     (events/listen
+;;      EventType/NAVIGATE
+;;      (fn [event]
+;;        (secretary/dispatch! (.-token event))))
+;;     (.setEnabled true)))
 
 
 (defroute "/" []
   ;;(swap! state assoc :page dashboard :bread nil)
   (session/put! :current-page dashboard)
-
+  (session/put! :current-page nil)
   )
 
 ;; (defroute "/entry/:id" {:as params}
@@ -73,10 +73,12 @@
   
   ;;(swap! state assoc :page dashboard-page)
   (session/put! :current-page dashboard)
+  (session/put! :bread nil)
   (GET "/entries" {:handler #(session/put! :data (% :data))})
   ;;(render-stuff)
 
   (reagent/render-component [page] (.getElementById js/document "app"))
+  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
   )
 
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"

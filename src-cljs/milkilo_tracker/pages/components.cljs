@@ -1,7 +1,7 @@
 ;; Some common components
-(ns milkilo-tracker.components
+(ns milkilo-tracker.pages.components
   (:require
-   ;;[milkilo-tracker.core :refer [state]] ;; Has session/state for now
+   [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    [secretary.core :refer [dispatch!]]
    
@@ -16,31 +16,30 @@
    {:on-click #(dispatch! "#/")} "Peruuta"]
   )
 
-(defn big-button [color action]
-  ;;TODO
-  nil
-  )
+;; (defn big-button [color action]
+;;   ;;TODO
+;;   nil
+;;   )
 
-(defn row [label & body]
-  [:div.row.top-margin
-   [:div.col-md-2 [:span.span-lg (str label ":")]]
-   [:div.col-md-3 body]])
+;; (defn row [label & body]
+;;   [:div.row.top-margin
+;;    [:div.col-md-2 [:span.span-lg (str label ":")]]
+;;    [:div.col-md-3 body]])
 
-(defn text-input [id label]
-  (row label
-       [:input.form-control.input-lg {:field :text :id id}]
-       ))
+;; (defn text-input [id label]
+;;   (row label
+;;        [:input.form-control.input-lg {:field :text :id id}]
+;;        ))
 
-(defn selection-buttons [label id & items]
-  (row label
-       [:div.text-center.top-margin {:field :single-select :id id}
-        (for [[k label] items]
-          [:button.btn.btn-default.btn-lg {:key k} label])]))
+;; (defn selection-buttons [label id & items]
+;;   (row label
+;;        [:div.text-center.top-margin {:field :single-select :id id}
+;;         (for [[k label] items]
+;;           [:button.btn.btn-default.btn-lg {:key k} label])]))
 
 (defn breadcrumbs []
   [:ol.breadcrumb
-   [:li {:class (when (= dashboard-page (:page @state)) "active")}
+   [:li {:class (when (= dashboard-page (session/get :current-page)) "active")}
     [:a {:on-click #(secretary/dispatch! "#/")} "Dashboard"]]
-
-   (if (@state :bread)
-     [:li.active (@state :bread)])])
+   (if-let [bread (session/get :bread)]
+     [:li.active bread])])
