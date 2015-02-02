@@ -5,15 +5,14 @@
    [milkilo-tracker.utils :refer [log]]
    
    [milkilo-tracker.pages.dashboard  :refer [dashboard-page]]
-   ;[milkilo-tracker.pages.add-entry :refer [add-entry]]
-   [milkilo-tracker.pages.edit :refer [edit-entry-page]]
+   [milkilo-tracker.pages.add        :refer [add-entry-page]]
+   [milkilo-tracker.pages.edit       :refer [edit-entry-page]]
    [milkilo-tracker.pages.history    :refer [history-page]]
    [milkilo-tracker.pages.about      :refer [about-page]]
-
    [milkilo-tracker.pages.components :refer [breadcrumbs]]
 
    [reagent.core :as reagent :refer [atom]]
-   ;;[reagent-forms.core :refer [bind-fields]]
+   
    [ajax.core :refer [GET]]
    [figwheel.client :as fw]
 
@@ -44,9 +43,10 @@
   (session/put! :bread "Muokkaa merkintää")
   )
 
-;; (defroute "/add-entry" []
-;;   (.log js/console "Add entry-view")
-;;   (swap! state assoc :page add-entry :bread "Lisää merkintä"))
+(defroute "/add-entry" []
+  (session/put! :current-page add-entry-page)
+  (session/put! :bread "Lisää merkintä")
+  )
 
 (defroute "/history" []
   (session/put! :current-page history-page)
