@@ -13,7 +13,7 @@
 
    [reagent.core :as reagent :refer [atom]]
    ;;[reagent-forms.core :refer [bind-fields]]
-   ;;[ajax.core :refer [POST, GET]]
+   [ajax.core :refer [GET]]
    [figwheel.client :as fw]
 
    [goog.events :as events]
@@ -73,7 +73,7 @@
   
   ;;(swap! state assoc :page dashboard-page)
   (session/put! :current-page dashboard)
-  ;;(GET "/entries" {:handler #(swap! state assoc :data (% :data))})
+  (GET "/entries" {:handler #(session/put! :data (% :data))})
   ;;(render-stuff)
 
   (reagent/render-component [page] (.getElementById js/document "app"))

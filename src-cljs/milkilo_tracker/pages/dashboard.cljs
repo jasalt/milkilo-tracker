@@ -7,7 +7,7 @@
 
 (defn dashboard []
   [:div
-   (session/get :test)
+   (pr-str (session/get :data))
    ])
 
 ;; (defn dashboard []
