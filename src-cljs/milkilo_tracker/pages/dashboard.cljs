@@ -1,18 +1,13 @@
 (ns milkilo-tracker.pages.dashboard
   (:require
-   ;;[milkilo-tracker.core :refer [state]] ;; Has session/state for now
    [milkilo-tracker.session :as session]
-
    [reagent.core :as reagent :refer [atom]]
-   ;;[reagent-forms.core :refer [bind-fields]]
    [secretary.core :refer [dispatch!]]
-   ;; [secretary.core :as secretary :include-macros true :refer [defroute]]
    ))
 
 (defn dashboard []
   [:div
-   ;;(str @c/state)
-   "asdf"
+   (session/get :test)
    ])
 
 ;; (defn dashboard []

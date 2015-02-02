@@ -10,7 +10,9 @@
 ;;                       :bread nil
 ;;                       }))
 
-(def state (atom {}))
+(def state (atom {
+                  :test "hello world"
+                  }))
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))
