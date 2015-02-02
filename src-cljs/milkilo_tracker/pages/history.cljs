@@ -6,7 +6,7 @@
 
    ))
 
-(defn history []
+(defn history-page []
   [:div
    [:h1 "Historia"]
    [:p "Add cool NVD3 diagrams and stuff"]

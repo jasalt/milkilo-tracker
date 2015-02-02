@@ -2,12 +2,13 @@
 (ns milkilo-tracker.core
   (:require
    [milkilo-tracker.session :as session]
-   ;;[milkilo-tracker.utils :refer [log]]
-   [milkilo-tracker.pages.dashboard :refer [dashboard]]
-   ;;[milkilo-tracker.pages.add-entry :refer [add-entry]]
-   ;;[milkilo-tracker.pages.edit-entry :refer [edit-entry]]
-   ;;[milkilo-tracker.pages.history :refer [history]]
-   ;;[milkilo-tracker.pages.about :refer [about]]
+   [milkilo-tracker.utils :refer [log]]
+   
+   [milkilo-tracker.pages.dashboard  :refer [dashboard-page]]
+   ;[milkilo-tracker.pages.add-entry :refer [add-entry]]
+   [milkilo-tracker.pages.edit :refer [edit-entry-page]]
+   [milkilo-tracker.pages.history    :refer [history-page]]
+   [milkilo-tracker.pages.about      :refer [about-page]]
 
    [milkilo-tracker.pages.components :refer [breadcrumbs]]
 
@@ -20,12 +21,10 @@
    [goog.history.EventType :as EventType]
    
    [secretary.core :as secretary :refer-macros [defroute]]
-   ;;[secretary.core :as secretary]
-   ;; [secretary.core :as secretary :include-macros true :refer [defroute]]
-   )
-  ;;(:require-macros [secretary.core :refer [defroute]])
-  )
+   ))
 
+;; TODO fix
+;; http://squirrel.pl/blog/tag/clojurescript/
 ;; (defn hook-browser-navigation! []
 ;;   (doto (History.)
 ;;     (events/listen
@@ -33,24 +32,31 @@
 ;;      (fn [event]
 ;;        (secretary/dispatch! (.-token event))))
 ;;     (.setEnabled true)))
-
+ 
 
 (defroute "/" []
-  ;;(swap! state assoc :page dashboard :bread nil)
-  (session/put! :current-page dashboard)
-  (session/put! :current-page nil)
+  (session/put! :current-page dashboard-page)
+  (session/put! :bread nil)
   )
 
-;; (defroute "/entry/:id" {:as params}
-;;   (swap! state assoc :page edit-entry :entry-id (params :id) :bread "Muokkaa merkintää"))
+(defroute "/entry/:id" {:as params}
+  (session/put! :current-page edit-entry-page)
+  (session/put! :bread "Muokkaa merkintää")
+  )
+
 ;; (defroute "/add-entry" []
 ;;   (.log js/console "Add entry-view")
 ;;   (swap! state assoc :page add-entry :bread "Lisää merkintä"))
-;; (defroute "/history" []
-;;   (.log js/console "History-view")
-;;   (swap! state assoc :page history :bread "Historia"))
-;; (defroute "/about" []
-;;   (swap! state assoc :page about :bread "Tietoja"))
+
+(defroute "/history" []
+  (session/put! :current-page history-page)
+  (session/put! :bread "Historia")
+  )
+
+(defroute "/about" []
+  (session/put! :current-page about-page)
+  (session/put! :bread "Tietoja sovelluksesta")
+)
 
 (def current-page
   (atom nil)
@@ -60,22 +66,14 @@
   [(session/get :current-page)]
   )
 
-;; (defn render-stuff []
-;;   ;;(reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
-;;   (reagent/render-component [page] (.getElementById js/document "app"))
-;;   )
-
-
 (defn init! []
   (js/console.log "(init!)")
+  (enable-console-print!)
   (secretary/set-config! :prefix "#")
-  ;; (enable-console-print!)
   
-  ;;(swap! state assoc :page dashboard-page)
-  (session/put! :current-page dashboard)
+  (session/put! :current-page dashboard-page)
   (session/put! :bread nil)
   (GET "/entries" {:handler #(session/put! :data (% :data))})
-  ;;(render-stuff)
 
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))

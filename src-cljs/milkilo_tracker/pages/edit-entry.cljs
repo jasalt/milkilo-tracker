@@ -1,11 +1,11 @@
-(ns milkilo-tracker.pages.edit-entry
+(ns milkilo-tracker.pages.edit
   (:require
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    [secretary.core :refer [dispatch!]]
    ))
 
-(defn edit-entry [entry-id]
+(defn edit-entry-page [entry-id]
   [:div
    [:h1 (str "Muokkaa merkintää " (session/get :entry-id))]
    [:button
