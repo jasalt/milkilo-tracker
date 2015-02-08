@@ -23,20 +23,20 @@ CREATE TABLE entries
 -- Pump usage hours
 CREATE TABLE entries_pump
 (
-usage_hours   INTEGER
+usage_hours INTEGER
 ) INHERITS (entries);
 
 -- Active test level.
 -- These records are to be enforced.
 CREATE TABLE entries_active
 (
-ml_per_l   SMALLINT
+ml_per_l SMALLINT
 ) INHERITS (entries);
 
 -- Surplus removal
 CREATE TABLE entries_surplus
 (
-litres   SMALLINT
+litres SMALLINT
 ) INHERITS (entries);
 
 -- Clear water sample
@@ -48,7 +48,7 @@ description text
 -- Added ferrosulphate
 CREATE TABLE entries_ferrosulphate
 (
-kilograms
+kilograms SMALLINT
 ) INHERITS (entries);
 
 
