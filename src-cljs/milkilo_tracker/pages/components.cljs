@@ -4,8 +4,7 @@
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    [secretary.core :refer [dispatch!]]
-   ;;[reagent-forms.core :refer [bind-fields]]
-   ;; [secretary.core :as secretary :include-macros true :refer [defroute]]
+   [milkilo-tracker.utils :refer [get-cookie]]
    )
   )
 
@@ -16,9 +15,10 @@
     [:a {:on-click #(dispatch! "#/")} "Dashboard"]]
    (if-let [bread (session/get :bread)]
      [:li.active bread])
+   [:p.pull-right (str (get-cookie "username") " kirjautunut")]
    ]
   )
- 
+
 (defn cancel []
   [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
    {:on-click #(dispatch! "#/")} "Peruuta"]
@@ -38,6 +38,3 @@
   (row label
        [:input.form-control.input-lg {:field :text :id id}]
        ))
-
-
-

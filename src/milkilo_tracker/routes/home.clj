@@ -3,6 +3,7 @@
             [milkilo-tracker.util :as util]
             [compojure.core :refer :all]
             [noir.response :refer [edn, redirect]]
+            [noir.cookies :as cookies]
             [cemerick.friend :as friend]
             [clojure.pprint :refer [pprint]]))
 
@@ -24,16 +25,22 @@
 ;; Why friends default unauth-handler does not catch error and redirect?
 (defn home-page []
   (try
-    (friend/authenticated (layout/render "app.html"))
-  (catch Exception e
-    (do
-      (println "GOT IT ++++++++++++++++")
-      (println (str "caught exception: " (.getMessage e)))
-      (redirect "/login")
+    (friend/authenticated
+     (do
+       (let [username (str (:username (friend/current-authentication)))]
+         (println (str "Logged in as "username))
+         (cookies/put! "username" username)
+         )
+       (layout/render "app.html")))
+    (catch Exception e
+      (do
+        (println "GOT IT ++++++++++++++++")
+        (println (str "caught exception: " (.getMessage e)))
+        (redirect "/login")
+        )
       )
     )
   )
-)
 
 (defn get-entries []
   (pprint "Return mock entries")
