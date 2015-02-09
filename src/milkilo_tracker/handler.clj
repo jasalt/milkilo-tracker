@@ -1,6 +1,7 @@
 (ns milkilo-tracker.handler
   (:require [compojure.core :refer [defroutes]]
             [milkilo-tracker.routes.home :refer [home-routes]]
+            [milkilo-tracker.routes.auth :refer [auth-routes]]
             [milkilo-tracker.middleware :refer [load-middleware]]
             [milkilo-tracker.session-manager :as session-manager]
             [noir.response :refer [redirect]]
@@ -63,7 +64,7 @@
 
 (def app (app-handler
            ;; add your application routes here
-           [home-routes base-routes]
+          [auth-routes home-routes base-routes]
            ;; add custom middleware here
            :middleware (load-middleware)
            :ring-defaults (mk-defaults false)
