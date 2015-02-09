@@ -6,7 +6,7 @@
   :url
   "http://example.com/FIXME"
   :dependencies
-  [[org.clojure/clojurescript "0.0-2644"]
+  [[org.clojure/clojurescript "0.0-2760"]
    [figwheel "0.2.2-SNAPSHOT"]
    [prone "0.8.0"]
    [log4j
@@ -16,23 +16,23 @@
      javax.jms/jms
      com.sun.jdmk/jmxtools
      com.sun.jmx/jmxri]]
-   [selmer "0.7.7"]
+   [selmer "0.8.0"]
    [com.taoensso/tower "3.0.2"]
-   [markdown-clj "0.9.58" :exclusions [com.keminglabs/cljx]]
+   [markdown-clj "0.9.62" :exclusions [com.keminglabs/cljx]]
    [im.chit/cronj "1.4.3"]
    [com.taoensso/timbre "3.3.1"]
    [org.postgresql/postgresql "9.3-1102-jdbc41"]
    [noir-exception "0.2.3"]
    [korma "0.4.0"]
-   [cljs-ajax "0.3.4"]
+   [cljs-ajax "0.3.9"]
    [lib-noir "0.9.5"]
    [org.clojure/clojure "1.6.0"]
    [clj-time "0.9.0"]
    [environ "1.0.0"]
-   [ring-server "0.3.1"]
-   [reagent-forms "0.2.9"]
+   [ring-server "0.4.0"]
+   [reagent-forms "0.4.3"]
    [secretary "1.2.1"]
-   [ragtime "0.3.6"]]
+   [ragtime "0.3.8"]]
   :repl-options
   {:init-ns milkilo-tracker.repl}
   :jvm-opts
@@ -40,7 +40,7 @@
   :plugins
   [[lein-ring "0.9.0"]
    [lein-environ "1.0.0"]
-   [lein-ancient "0.5.5"]
+   [lein-ancient "0.6.2"]
    [lein-cljsbuild "1.0.4"]
    [lein-figwheel "0.2.2-SNAPSHOT"]
    [ragtime/ragtime.lein "0.3.6"]]
