@@ -30,6 +30,8 @@
    [clj-time "0.9.0"]
    [environ "1.0.0"]
    [ring-server "0.4.0"]
+   [org.clojure/core.cache "0.6.4"]
+   [com.cemerick/friend "0.2.1"]
    [reagent-forms "0.4.3"]
    [secretary "1.2.1"]
    [ragtime "0.3.8"]]
