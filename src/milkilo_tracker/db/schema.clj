@@ -2,7 +2,7 @@
 
 (def db-spec
   {:subprotocol "postgresql"
-   :subname "//localhost/milkilo_tracker"
+   :subname "//localhost/milkilo"
    :user "dbuser"
    :password "dbpass"
    }

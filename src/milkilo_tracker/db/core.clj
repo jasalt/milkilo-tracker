@@ -3,8 +3,10 @@
         [korma.db :only (defdb)])
   (:require [milkilo-tracker.db.schema :as schema]))
 
+;; Connect and create connection pool
 (defdb db schema/db-spec)
 
+;; Represents users table
 (defentity users)
 
 (defn create-user [user]

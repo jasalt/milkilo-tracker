@@ -79,7 +79,7 @@
   :ragtime
   {:migrations ragtime.sql.files/migrations,
    :database
-   "jdbc:postgresql://localhost/milkilo_tracker?user=dbuser&password=dbpass"}
+   "jdbc:postgresql://localhost/milkilo?user=dbuser&password=dbpass"}
   :cljsbuild
   {:builds
    {:app
@@ -103,7 +103,7 @@
    ;; Server Ring Handler (optional)
    ;; if you want to embed a ring handler into the figwheel http-kit
    ;; server
-   :ring-handler milkilo-tracker.handler/app
+   ;; :ring-handler milkilo-tracker.handler/app
 
    :open-file-command "file-opener"
 

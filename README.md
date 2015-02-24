@@ -11,13 +11,25 @@ App for logging and enforcing recurrent measurements of a sewage refinery system
 
 # Development notes
 
-You will need [Leiningen][2] 2.0 or above installed.
+You will need [Leiningen][2] 2.0 or above installed. And a working Postgres installation.
 
 [2]: https://github.com/technomancy/leiningen
 
 Install project dependencies:
 
     lein deps
+
+## Initialize database
+Create database:
+
+    createdb milkilo
+
+Add database role `dbuser` with password `dbpass` and authorize it to do CREATE, DELETE, UPDATE tables etc. Consult the well written [3][PostgreSQL Documentation].
+
+Run migrations to add some tables:
+    lein ragtime migrate
+
+[3]: http://www.postgresql.org/docs/8.1/static/user-manag.html
 
 ## Running
 
