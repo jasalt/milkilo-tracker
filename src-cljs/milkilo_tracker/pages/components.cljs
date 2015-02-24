@@ -38,3 +38,8 @@
   (row label
        [:input.form-control.input-lg {:field :text :id id}]
        ))
+
+(defn date-input []
+  (row "Päivämäärä"
+       [:div {:field :datepicker :id :entry-date :date-format "yyyy/mm/dd" :inline true
+              :auto-close? true}]))

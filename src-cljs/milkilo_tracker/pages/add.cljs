@@ -4,7 +4,7 @@
    [reagent.core :as reagent :refer [atom]]
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
-   [milkilo-tracker.pages.components :refer [text-input cancel row]]
+   [milkilo-tracker.pages.components :refer [text-input date-input cancel row]]
    ))
 
 (defn selection-buttons [label id & items]
@@ -15,7 +15,7 @@
 
 (def form
   [:div
-   (text-input :date "Päivämäärä")
+   (date-input)
    (selection-buttons "Merkinnän tyyppi" :type
                       [:type-a "Tyyppi A"]
                       [:type-b "Tyyppi B"]
