@@ -24,9 +24,10 @@ Create database:
 
     createdb milkilo
 
-Add database role `dbuser` with password `dbpass` and authorize it to do CREATE, DELETE, UPDATE tables etc. Consult the well written [3][PostgreSQL Documentation].
+Add database role `dbuser` with password `dbpass` and authorize it to do CREATE, DELETE, UPDATE tables etc. Consult the well written [PostgreSQL Documentation][3].
 
 Run migrations to add some tables:
+
     lein ragtime migrate
 
 [3]: http://www.postgresql.org/docs/8.1/static/user-manag.html
