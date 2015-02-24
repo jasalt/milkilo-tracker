@@ -41,5 +41,5 @@
 
 (defn date-input []
   (row "Päivämäärä"
-       [:div {:field :datepicker :id :entry-date :date-format "yyyy/mm/dd" :inline true
-              :auto-close? true}]))
+       [:div.input-lg {:field :datepicker :id :entry-date :date-format "dd/mm/yyyy"
+                       :inline true :auto-close? true}]))
