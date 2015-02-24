@@ -1,7 +1,8 @@
 -- uberadmin has rights to do everything.
 CREATE TABLE users (
 id         serial PRIMARY KEY,
-email      varchar(30) NOT NULL UNIQUE,
+email      varchar(30) NOT NULL UNIQUE
+CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
 password   varchar(100) NOT NULL,
 first_name varchar(30) NOT NULL,
 last_name  varchar(30) NOT NULL,
