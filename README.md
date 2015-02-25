@@ -38,6 +38,9 @@ To start a web server for the application, port 3000, run:
 
     lein ring server
 
+Or from REPL at milkilo-tracker.repl namespace run:
+    (start-server)
+
 Run figwheel server for reloading changes:
 
     lein figwheel app
