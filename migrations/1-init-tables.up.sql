@@ -1,4 +1,5 @@
--- uberadmin has rights to do everything.
+-- Email is used as username
+-- Uberadmin has rights to do everything
 CREATE TABLE users (
 id         serial PRIMARY KEY,
 email      varchar(30) NOT NULL UNIQUE
@@ -12,8 +13,8 @@ last_login timestamp,
 is_active  boolean
 );
 
--- * admins have crud rights for site entries and get alerts
--- * viewers can only read
+-- * Admins have crud rights for site entries and get alerts
+-- * Viewers can only read
 CREATE TABLE sites (
 site_id        serial PRIMARY KEY,
 alert_interval interval NOT NULL,

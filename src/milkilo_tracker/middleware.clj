@@ -11,6 +11,7 @@
             [cemerick.friend :as friend]
             (cemerick.friend [workflows :as workflows]
                              [credentials :as creds])
+            [milkilo-tracker.db.core :as db]
             ))
 
 ;; A dummy in-memory user "database" TODO
@@ -20,6 +21,27 @@
             "user1" {:username "user1"
                      :password (creds/hash-bcrypt "password")
                      :roles #{::user}}})
+
+;; TODO remove debugging print statements
+(defn credential-fn [auth-map]
+  (let [email (auth-map :username)
+        password (auth-map :password)
+        db-user (db/get-user {:email email})]
+
+    (println (str "Got auth-map " auth-map))
+    (if db-user
+      (let [hash-stored (db-user :password)]
+        (println "Found user by email, comparing given password to stored hash")
+        (if (creds/bcrypt-verify password hash-stored)
+          (do
+            (println "Passwords match!")
+            db-user
+            )
+          (println "Passwords don't match"))
+        )
+      (println "Email address not found"))
+    )
+  )
 
 (defn log-request [handler]
   (fn [req]
@@ -33,8 +55,8 @@
 (def production-middleware
   [#(wrap-internal-error % :log (fn [e] (timbre/error e)))
    #(session/wrap-noir-session % {:store (memory-store)})
-   #(friend/authenticate % {:credential-fn (partial creds/bcrypt-credential-fn users)
-                                                    :workflows [(workflows/interactive-form)]})
+   #(friend/authenticate % {:credential-fn credential-fn
+                            :workflows [(workflows/interactive-form)]})
    ])
 
 (defn load-middleware []

@@ -3,7 +3,7 @@
         [korma.db :only (defdb)])
   (:require [milkilo-tracker.db.schema :as schema]))
 
-;; Connect and create connection pool
+;; Create connection pool
 (defdb db schema/db-spec)
 
 ;; Represents users table
@@ -20,7 +20,8 @@
                :email email})
   (where {:id id})))
 
-(defn get-user [id]
+(defn get-user [user]
   (first (select users
-                 (where {:id id})
+                 (where user) ; {:id ID} or {:username EMAIL}
                  (limit 1))))
+
