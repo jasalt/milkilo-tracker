@@ -27,20 +27,14 @@
   (try
     (friend/authenticated
      (do
-       (let [username (str (:username (friend/current-authentication)))]
-         (println (str "Logged in as "username))
-         (cookies/put! "username" username)
-         )
+       (let [email (str (:email (friend/current-authentication)))]
+         (println (str "Logged in as: " email))
+         (cookies/put! "email" email))
        (layout/render "app.html")))
     (catch Exception e
       (do
-        (println "GOT IT ++++++++++++++++")
-        (println (str "caught exception: " (.getMessage e)))
-        (redirect "/login")
-        )
-      )
-    )
-  )
+        (println (str "!! Caught exception: " (.getMessage e)))
+        (redirect "/login")))))
 
 (defn get-entries []
   (pprint "Return mock entries")
