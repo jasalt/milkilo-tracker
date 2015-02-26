@@ -5,7 +5,6 @@
    [reagent.core :as reagent :refer [atom]]
    [secretary.core :refer [dispatch!]]
    [milkilo-tracker.utils :refer [get-cookie]]
-   [clojure.string :as str]
    )
   )
 
@@ -16,10 +15,8 @@
     [:a {:on-click #(dispatch! "#/")} "Dashboard"]]
    (if-let [bread (session/get :bread)]
      [:li.active bread])
-   (let [before-at (first (str/split (get-cookie "email") "%40"))
-         name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
-     [:h6.pull-right
-      [:small name]])])
+   
+   ])
 
 (defn cancel []
   [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
