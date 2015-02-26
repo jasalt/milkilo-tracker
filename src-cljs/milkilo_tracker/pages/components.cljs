@@ -18,7 +18,8 @@
      [:li.active bread])
    (let [before-at (first (str/split (get-cookie "email") "%40"))
          name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
-     [:small.pull-right name])])
+     [:h6.pull-right
+      [:small name]])])
 
 (defn cancel []
   [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
