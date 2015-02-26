@@ -11,4 +11,5 @@
 (defroutes auth-routes
   (GET "/login" [] (login-page))
   (GET "/secret" [] (friend/authorize #{:milkilo-tracker.middleware/user} "Logged in, it seems."))
+  (friend/logout (ANY "/logout" request (ring.util.response/redirect "/")))
   )
