@@ -33,39 +33,32 @@
 
 (defroute "/" []
   (session/put! :current-page dashboard-page)
-  (session/put! :bread nil)
-  )
+  (session/put! :bread nil))
 
 (defroute "/entry/:id" {:as params}
   (session/put! :current-page edit-entry-page)
-  (session/put! :bread "Muokkaa merkintää")
-  )
+  (session/put! :bread "Muokkaa merkintää"))
 
 (defroute "/add-entry" []
   (session/put! :current-page add-entry-page)
-  (session/put! :bread "Lisää merkintä")
-  )
+  (session/put! :bread "Lisää merkintä"))
 
 (defroute "/history" []
   (session/put! :current-page history-page)
-  (session/put! :bread "Historia")
-  )
+  (session/put! :bread "Historia"))
 
 (defroute "/about" []
   (session/put! :current-page about-page)
-  (session/put! :bread "Tietoja sovelluksesta")
-)
+  (session/put! :bread "Tietoja sovelluksesta"))
 
 (def current-page
-  (atom nil)
-  )
+  (atom nil))
 
 (defn page []
-  [(session/get :current-page)]
-  )
+  [(session/get :current-page)])
 
 (defn init! []
-  (js/console.log "(init!)")
+  (js/console.log "(core/init!)")
   (enable-console-print!)
   (secretary/set-config! :prefix "#")
   
@@ -74,10 +67,7 @@
   (GET "/entries" {:handler #(session/put! :data (% :data))})
 
   (reagent/render-component [page] (.getElementById js/document "app"))
-  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
-  )
+  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar")))
 
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
            :on-jsload (fn [] (init!))})
-
-(init!)
