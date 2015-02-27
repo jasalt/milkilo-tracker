@@ -27,23 +27,7 @@
                  (where user) ; {:id ID} or {:username EMAIL}
                  (limit 1))))
 
-(def mock-entries
-  [
-   {:id 1
-    :value 2.55
-    :date "1.2.3123"
-    :type "A"
-    },
-   {:id 2
-    :value 35.31
-    :date "9.8.1229"
-    :type "B"
-    }
-   ])
-
-;; Return all users sites
-(defn get-sites [user-id]
-  (print "I should return users sites")
-  {:status "Get WIP"
-   :data mock-entries} 
-   )
+(defn get-administered-sites [user-id]
+  ;; Return all sites where user is admin
+  (exec-raw [(str "SELECT * FROM sites WHERE admins @> ARRAY["user-id"]")]
+            :results))
