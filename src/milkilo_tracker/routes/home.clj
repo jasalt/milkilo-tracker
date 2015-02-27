@@ -5,27 +5,15 @@
             [noir.response :refer [edn, redirect]]
             [noir.cookies :as cookies]
             [cemerick.friend :as friend]
-            [clojure.pprint :refer [pprint]]))
-
-(def mock-entries
-  [
-   {:id 1
-    :value 2.55
-    :date "1.2.3123"
-    :type "A"
-    },
-   {:id 2
-    :value 35.31
-    :date "9.8.1229"
-    :type "B"
-    }
-   ])
+            [clojure.pprint :refer [pprint]]
+            [milkilo-tracker.db.core :as db]
+            ))
 
 ;; TODO Hackfixed authentication exception handling
 ;; Why friends default unauth-handler does not catch error and redirect?
 (defn home-page []
   (try
-    (friend/authenticated
+   (friend/authenticated
      (do
        (let [email (str (:email (friend/current-authentication)))]
          (println (str "Logged in as: " email))
@@ -36,10 +24,13 @@
         (println (str "!! Caught exception: " (.getMessage e)))
         (redirect "/login")))))
 
+;; TODO rename to get-sites
 (defn get-entries []
-  (pprint "Return mock entries")
-  {:status "Get WIP"
-   :data mock-entries}
+  (pprint "Fetching initial user data")
+  (let [user-id (:id (friend/current-authentication))]
+    (print (str "Getting sites for user " user-id))
+    (db/get-sites user-id)
+    )
   )
 
 (defn save-entry [doc]
