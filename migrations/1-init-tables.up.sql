@@ -16,8 +16,8 @@ is_active  boolean
 -- * Admins have crud rights for site entries and get alerts
 -- * Viewers can only read
 CREATE TABLE sites (
-site_id        serial PRIMARY KEY,
-site_name      varchar(50) NOT NULL,
+id        serial PRIMARY KEY,
+name      varchar(50) NOT NULL,
 alert_interval interval DEFAULT interval '2 weeks',
 admins         integer[] NOT NULL,
 viewers        integer[]
