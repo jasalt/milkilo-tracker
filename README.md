@@ -20,11 +20,14 @@ Install project dependencies:
     lein deps
 
 ## Initialize database
-Create database:
+Create database in PostgreSQL prompt:
 
-    createdb milkilo
+    CREATE DATABASE milkilo;
 
 Add database role `dbuser` with password `dbpass` and authorize it to do CREATE, DELETE, UPDATE tables etc. Consult the well written [PostgreSQL Documentation][3].
+
+    CREATE USER dbuser WITH PASSWORD 'dbpass';
+    GRANT ALL PRIVILEGES on DATABASE milkilo to dbuser;
 
 Run migrations to add some tables:
 
