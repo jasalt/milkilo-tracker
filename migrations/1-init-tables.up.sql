@@ -25,8 +25,8 @@ viewers        integer[]
 
 -- Inherit different entry types
 CREATE TABLE entries (
-id         varchar(20) PRIMARY KEY,
-entry_date timestamp NOT NULL,
+id         serial PRIMARY KEY,
+entry_date timestamp NOT NULL DEFAULT current_timestamp,
 site_id    integer NOT NULL
 );
 

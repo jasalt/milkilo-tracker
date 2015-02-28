@@ -9,7 +9,7 @@
 ;; Represents users table
 (defentity users)
 (defentity sites)
-;;(defentity entries)
+(defentity entries)
 
 (defn create-user [user]
   (insert users
@@ -31,3 +31,20 @@
   ;; Return all sites where user is admin
   (exec-raw [(str "SELECT * FROM sites WHERE admins @> ARRAY["user-id"]")]
             :results))
+
+;; (get-entries 2)
+;; (defn get-entries [site-id]
+;;   (select entries
+;;           (where {:id site-id}))
+;;   )
+
+(defn get-user-data [user-id]
+  (let [user-sites (get-administered-sites user-id)]
+    ;; Create array of site maps that contain entries
+    ;; filter out keys not in [:id :name :alert_interval]
+    ;; add key with value (get-entries )
+    user-sites 
+    )
+  ;; Sites
+  )
+;; (get-user-data 8)

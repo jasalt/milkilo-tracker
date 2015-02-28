@@ -28,10 +28,7 @@
 (defn get-entries []
   (pprint "Fetching initial user data")
   (let [user-id (:id (friend/current-authentication))]
-    (println (str "Getting sites for user " user-id))
-    (db/get-administered-sites user-id)
-    )
-  )
+    (db/get-user-data user-id)))
 
 (defn save-entry [doc]
   (pprint doc)
