@@ -29,7 +29,7 @@
      [:div
       [:h4 "Merkinnät:"]
       (for [entry entries]
-        [:p (str entry)])])
+        ^{:key entry} [:p (str entry)])])
 
    (let [before-at (first (str/split (get-cookie "email") "%40"))
          name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
