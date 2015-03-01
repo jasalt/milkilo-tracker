@@ -57,6 +57,13 @@
 (defn page []
   [(session/get :current-page)])
 
+(defn init-data-handler [resp]
+  ;; TODO Handle multiple user sites etc.
+  (.log js/console (str resp)) 
+  (let [site-data (first resp)]
+    (session/put! :entries (site-data :entries))
+    (session/put! :site (dissoc site-data :entries))))
+
 (defn init! []
   (js/console.log "(core/init!)")
   (enable-console-print!)
@@ -64,8 +71,7 @@
   
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil)
-  (GET "/entries" {:handler #(session/put! :data (% :data))})
-
+  (GET "/entries" {:handler init-data-handler})
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar")))
 

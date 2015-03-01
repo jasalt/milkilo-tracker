@@ -19,16 +19,21 @@
      {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
       :on-click #(secretary/dispatch! "#/history")}]]
 
-   (if-let [last-entry (first (session/get :data))]
+   (if-let [site (session/get :site)]
      [:div
-      [:p "Viimeisin mittaus"]
-      [:a {:on-click #(secretary/dispatch! (str "#/entry/" (last-entry :id)))}
-       (str "Item: " (last-entry :id) " Date: " (last-entry :date)) ]]
-     [:p "Ei mittauksia.."])
+      [:h4 "Puhdistamo"]
+      [:p (str site)]]
+     [:p "Puhdistamo puuttuu (tai sen tietoja ladataan)"])
    
+   (if-let [entries (session/get :entries)]
+     [:div
+      [:h4 "Merkinnät:"]
+      (for [entry entries]
+        [:p (str entry)])])
+
    (let [before-at (first (str/split (get-cookie "email") "%40"))
          name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
      [:a.text-center {:on-click #(let [message "Oletko varma että haluat kirjautua ulos?"
                                       dialog-result (.confirm js/window message)]
                                   (when dialog-result (logout)))}
-      [:h4 [:small (str "Kirjaudu ulos (" name ")")]]])])
+      [:h4 [:small (str "Kirjaudu ulos ("name")")]]])])
