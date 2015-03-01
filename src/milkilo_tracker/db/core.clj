@@ -39,12 +39,13 @@
 ;;   )
 
 (defn get-user-data [user-id]
-  (let [user-sites (get-administered-sites user-id)]
+  (let [user-sites (get-administered-sites user-id)
+        cleaned-user-sites (map #(select-keys % [:id :name]) user-sites)]
     ;; Create array of site maps that contain entries
     ;; filter out keys not in [:id :name :alert_interval]
     ;; add key with value (get-entries )
-    user-sites 
+
+    cleaned-user-sites
     )
-  ;; Sites
   )
-;; (get-user-data 8)
+;; (get-user-data 2)

@@ -30,6 +30,11 @@ entry_date timestamp NOT NULL DEFAULT current_timestamp,
 site_id    integer NOT NULL
 );
 
+-- Comment entry
+CREATE TABLE entries_comment (
+comment varchar(1000) NOT NULL)
+INHERITS (entries);
+
 -- Pump usage hours
 CREATE TABLE entries_pump (
 usage_hours integer NOT NULL)
@@ -54,7 +59,7 @@ INHERITS (entries);
 
 -- Ferrosulphate level gauge
 CREATE TABLE entries_ferrosulphate_level (
-percent smallint NOT NULL CHECK (0 <= percent AND percent =< 100))
+percent integer NOT NULL CHECK (percent BETWEEN 0 and 100))
 INHERITS (entries);
 
 -- Added ferrosulphate
