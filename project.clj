@@ -79,8 +79,8 @@
   :ragtime
   {:migrations ragtime.sql.files/migrations,
    :database
-   "jdbc:postgresql://localhost/milkilo?user=dbadmin&password=cljsbuild"}
-  :dbpass
+   "jdbc:postgresql://localhost/milkilo?user=dbadmin&password=dbpass"}
+  :cljsbuild
   {:builds
    {:app
     {:source-paths ["src-cljs"],
