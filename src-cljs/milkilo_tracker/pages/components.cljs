@@ -23,11 +23,6 @@
    {:on-click #(dispatch! "#/")} "Peruuta"]
   )
 
-;; (defn big-button [color action]
-;;   ;;TODO
-;;   nil
-;;   )
-
 (defn row [label & body]
   [:div.row.top-margin
    [:div.col-md-2 [:span.span-lg (str label ":")]]

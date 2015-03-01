@@ -9,15 +9,15 @@
 
 (defn dashboard-page []
   [:div
-
+   [:br]
    [:button.btn.btn-lg.btn-primary.btn-block
     {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
    
-   [:div.chart-container
-    [:p "Diagram:"]
-    [:img.img-responsive
-     {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
-      :on-click #(secretary/dispatch! "#/history")}]]
+   ;; [:div.chart-container
+   ;;  [:p "Diagram:"]
+   ;;  [:img.img-responsive
+   ;;   {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
+   ;;    :on-click #(secretary/dispatch! "#/history")}]]
 
    (if-let [site (session/get :site)]
      [:div
