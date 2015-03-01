@@ -49,7 +49,7 @@ http://yogthos.net/posts/2014-08-14-Routing-With-Secretary.html
 *** DONE Users to DB
 *** DONE Check login from db
 *** TODO Show user sites on dashboard
-On initial fetch, return proper data
+On initial fetch, return proper data.
 ** Entry CRUD
 *** TODO Add some data for testing
 *** TODO Single entry page
@@ -78,3 +78,37 @@ Not critical right now..
 Currently designed for single user.
 Maybe someday there could be more users..
 *** Registration
+* Notes
+** Record types
+*** Active silt (entries_active)
+ml/l
+
+Measurement range  100 to 1000ml.
+
+Normal measurements are between 100-600ml.
+
+if 400-500 ml, surplus removal
+
+500ml -> jätetään kolmannes
+(/ 500 3) = 166
+
+4-6wk
+*** Surplus removal (entries_surplus)
+if measurement..
+*** Ferrosulphate addition (entries_ferrosulphate)
+Kilograms
+
+*** Add table ferrosulphate level
+50%
+Täyttöastemäärä
+with measurement
+if > 20% do addition
+*** Clean water sample (entries_water)
+with active measurement
+
+*** Pump usage hours (entries_pump)
+Hours
+
+with measurement
+
+## measurement steps
