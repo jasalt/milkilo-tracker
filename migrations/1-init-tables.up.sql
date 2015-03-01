@@ -23,46 +23,15 @@ admins         integer[] NOT NULL,
 viewers        integer[]
 );
 
--- Inherit different entry types
 CREATE TABLE entries (
-id         serial PRIMARY KEY,
-entry_date timestamp NOT NULL DEFAULT current_timestamp,
-site_id    integer NOT NULL
+id                          serial PRIMARY KEY,
+entry_date                  timestamp NOT NULL DEFAULT current_timestamp,
+site_id                     integer NOT NULL,
+comment                     varchar(1000),
+silt_active_ml_per_l        integer,
+silt_surplus_removal_l      integer,
+pump_usage_hours            integer,
+water_quality               integer CHECK (water_quality > 0 AND water_quality < 4),
+ferrosulphate_level_percent integer CHECK (ferrosulphate_level_percent BETWEEN 0 and 100),
+ferrosulphate_addition_kg   smallint
 );
-
--- Comment entry
-CREATE TABLE entries_comment (
-comment varchar(1000) NOT NULL)
-INHERITS (entries);
-
--- Pump usage hours
-CREATE TABLE entries_pump (
-usage_hours integer NOT NULL)
-INHERITS (entries);
-
--- Active test level.
--- These records are to be enforced.
-CREATE TABLE entries_active (
-ml_per_l smallint NOT NULL)
-INHERITS (entries);
-
--- Surplus removal
-CREATE TABLE entries_surplus (
-litres smallint NOT NULL)
-INHERITS (entries);
-
--- Clear water sample, quality 1-3, 1 is best.
-CREATE TABLE entries_water (
-quality     smallint CHECK (quality > 0 AND quality < 4) NOT NULL,
-description varchar(200))
-INHERITS (entries);
-
--- Ferrosulphate level gauge
-CREATE TABLE entries_ferrosulphate_level (
-percent integer NOT NULL CHECK (percent BETWEEN 0 and 100))
-INHERITS (entries);
-
--- Added ferrosulphate
-CREATE TABLE entries_ferrosulphate_addition (
-kilograms smallint NOT NULL)
-INHERITS (entries);
