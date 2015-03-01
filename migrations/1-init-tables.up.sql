@@ -46,13 +46,18 @@ CREATE TABLE entries_surplus (
 litres smallint NOT NULL)
 INHERITS (entries);
 
--- Clear water sample, quality 1-3,
+-- Clear water sample, quality 1-3, 1 is best.
 CREATE TABLE entries_water (
 quality     smallint CHECK (quality > 0 AND quality < 4) NOT NULL,
 description varchar(200))
 INHERITS (entries);
 
+-- Ferrosulphate level gauge
+CREATE TABLE entries_ferrosulphate_level (
+percent smallint NOT NULL CHECK (0 <= percent AND percent =< 100))
+INHERITS (entries);
+
 -- Added ferrosulphate
-CREATE TABLE entries_ferrosulphate (
+CREATE TABLE entries_ferrosulphate_addition (
 kilograms smallint NOT NULL)
 INHERITS (entries);
