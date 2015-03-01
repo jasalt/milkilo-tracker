@@ -27,7 +27,8 @@ Create database in PostgreSQL prompt:
 Add two database roles `dbuser` and `dbadmin` with password `dbpass`. Authorize `dbuser` to do anything with the default (public) schema and make `dbadmin` a superuser who can alter functions (used by ragtime). Consult the well written [PostgreSQL Documentation][3].
 
     CREATE USER dbuser WITH PASSWORD 'dbpass';
-    GRANT ALL PRIVILEGES on SCHEMA public to dbuser;
+    GRANT ALL PRIVILEGES ON SCHEMA public to dbuser;
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO  dbuser;
 
     CREATE USER dbadmin WITH PASSWORD 'dbpass' SUPERUSER;
 
