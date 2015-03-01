@@ -16,11 +16,18 @@
 (def form
   [:div
    (date-input)
+   (let [entry-types (session/get :entry_types)]
+     (for [type entry-types]
+       ^{:key type} [:p (type :table)]
+       )
+     )
+   
    (selection-buttons "Merkinnän tyyppi" :type
                       [:type-a "Tyyppi A"]
                       [:type-b "Tyyppi B"]
                       [:type-c "Tyyppi C"])
-   (text-input :value "Arvo")])
+   (text-input :value "Arvo")
+   ])
 
 (defn save-entry [new-entry]
   (fn []

@@ -7,29 +7,27 @@
 (def state
   (atom
    {:entry_types
-    {:comment
-     {:name "Kommentti" :input-type (keyword "text")
+    [{:name "Kommentti" :table "comment" :input-type (keyword "text")
       :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun \\
-                    merkintätyypin yhteydessä."}
-     :silt_active_ml_per_l
-     {:name "Aktiivilietemittaus" :input-type (keyword "number")
-      :unit "ml per litra" :description "Aktiivilietteen mittaus"}
-     :silt_surplus_removal_l
-     {:name "Poistopumppaus" :input-type (keyword "number")
-      :unit "litraa" :description "Ylijäämälietteen poistomäärä litroina."}
-     :pump_usage_hours
-     {:name "Pumpun käyttötunnit" :input-type (keyword "number")
-      :unit "tuntia" :description "Pumpun käyttötuntilaskurin lukema"}
-     :water_quality
-     {:name "Kirkasvesinäyte" :input-type (keyword "number")
-      :unit "1-3" :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
-     :ferrosulphate_level_percent
-     {:name "Ferrosulfaatin määrä" :input-type (keyword "number")
-      :unit "prosenttiluku" :description "Ferrosulfaattimittarin prosenttilukema"}
-     :ferrosulphate_addition_kg
-     {:name "Ferrosulfaatin lisäys" :input-type (keyword "number")
-      :unit "kiloa" :description "Ferrosulfaatin määrän lisäys kiloina."}
-     }}))
+                     merkintätyypin yhteydessä."}
+     {:name "Aktiivilietemittaus" :table "silt_active_ml_per_l"
+      :input-type (keyword "number") :unit "ml per litra"
+      :description "Aktiivilietteen mittaus"}
+     {:name "Poistopumppaus" :table "silt_surplus_removal_l"
+      :input-type (keyword "number") :unit "litraa"
+      :description "Ylijäämälietteen poistomäärä litroina."}
+     {:name "Pumpun käyttötunnit" :table "pump_usage_hours"
+      :input-type (keyword "number") :unit "tuntia"
+      :description "Pumpun käyttötuntilaskurin lukema"}
+     {:name "Kirkasvesinäyte" :table "water_quality"
+      :input-type (keyword "number") :unit "1-3"
+      :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
+     {:name "Ferrosulfaatin määrä" :table "ferrosulphate_level_percent"
+      :input-type (keyword "number") :unit "prosenttiluku"
+      :description "Ferrosulfaattimittarin prosenttilukema"}
+     {:name "Ferrosulfaatin lisäys" :table "ferrosulphate_addition_kg"
+      :input-type (keyword "number") :unit "kiloa"
+      :description "Ferrosulfaatin määrän lisäys kiloina."}]}))
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))
