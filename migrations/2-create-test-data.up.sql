@@ -18,9 +18,21 @@ VALUES ('Salapuhdistamo',
 (SELECT ARRAY(SELECT id from users WHERE email='admin@user.com'))
 );
 
-DO $do$ BEGIN FOR i IN 1..10 LOOP
-      INSERT INTO entries (site_id)
-      VALUES ((SELECT id from sites WHERE name='Testipuhdistamo'));
-END LOOP; END $do$
+-- Helper function to return random integers between two given integers
+CREATE OR REPLACE FUNCTION get_random_number(INTEGER, INTEGER) RETURNS INTEGER AS $$
+DECLARE
+        start_int ALIAS FOR $1;
+        end_int ALIAS FOR $2;
+BEGIN
+        RETURN trunc(random() * (end_int-start_int) + start_int);
+END;
+$$ LANGUAGE 'plpgsql' STRICT;
 
--- TODO select all children to array instead: SELECT pg_inherits.*, c.relname AS child, p.relname AS parent FROM    pg_inherits JOIN pg_class AS c ON (inhrelid=c.oid) JOIN pg_class as p ON (inhparent=p.oid);
+DO $do$ BEGIN FOR i IN 1 .. 9 LOOP
+      INSERT INTO entries_active (site_id, entry_date, ml_per_l)
+      VALUES (
+      (SELECT id from sites WHERE name='Testipuhdistamo'),
+      (SELECT date(now() - '1 year'::interval + i * '4 weeks'::interval)),
+      get_random_number(100, 600)
+      );
+END LOOP; END $do$;
