@@ -32,17 +32,17 @@
   (exec-raw [(str "SELECT * FROM sites WHERE admins @> ARRAY["user-id"]")]
             :results))
 
-;; (get-entries 2)
-;; (defn get-entries [site-id]
-;;   (select entries
-;;           (where {:id site-id}))
-;;   )
-
 (defn get-entries [site-id]
-  [1 2 3 4] ;; TODO)
+  (map #(dissoc % :site_id)
+       (select entries
+               (where {:site_id site-id}))))
 
 (defn get-user-data [user-id]
   (let [user-sites (get-administered-sites user-id)
         cleaned-user-sites (map #(select-keys % [:id :name]) user-sites)]
-    (map (fn [site] (merge site {:entries (get-entries (site :id))}))
-         cleaned-user-sites)))
+    (map
+     (fn [site]
+       (merge site {:entries (get-entries (site :id))}))
+     cleaned-user-sites)))
+
+;;(get-user-data 15)
