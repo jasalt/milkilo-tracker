@@ -38,14 +38,11 @@
 ;;           (where {:id site-id}))
 ;;   )
 
+(defn get-entries [site-id]
+  [1 2 3 4] ;; TODO)
+
 (defn get-user-data [user-id]
   (let [user-sites (get-administered-sites user-id)
         cleaned-user-sites (map #(select-keys % [:id :name]) user-sites)]
-    ;; Create array of site maps that contain entries
-    ;; filter out keys not in [:id :name :alert_interval]
-    ;; add key with value (get-entries )
-
-    cleaned-user-sites
-    )
-  )
-;; (get-user-data 2)
+    (map (fn [site] (merge site {:entries (get-entries (site :id))}))
+         cleaned-user-sites)))
