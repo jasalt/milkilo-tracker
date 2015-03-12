@@ -11,24 +11,15 @@
    [cljs-time.core :refer [day month year]]
    ))
 
-(defn selection-buttons [label id & items]
-  (row label
-       [:div.text-center.top-margin {:field :single-select :id id}
-        (for [[k label] items]
-          [:button.btn.btn-default.btn-lg {:key k} label])]))
-
-(def form
-  [:div
-   (date-input)
-   [row "Merkintätyyppi"
-    (let [entry-types (session/get :entry_types)]
-      [:select {:id "type-selection"} (for [type entry-types]
-                                        ^{:key (type :table)}
-                                        [:option {:value (type :table)}
-                                         (type :name)]
-                                        )])]
-   (text-input :value "Arvo")
-   ])
+(def initial-entry
+  (let [now (local-now)]
+    {:entry
+     {:date {:year (year now),
+             :month (month now),
+             :day (day now)}
+      :type nil
+      :value nil}}
+    ))
 
 (defn save-entry [new-entry]
   (fn []
@@ -39,25 +30,49 @@
                                             (:status resp)))
                       (session/put! :saved? true))})))
 
-(def initial-state
-  (let [now (local-now)]
-    {:entry-date
-     {:year (year now), 
-      :month (month now), 
-      :day (day now)}}))
+(def entry-form
+  [:div
+   [row "Päivämäärä"
+    (date-input)]
+
+   [row "Merkintätyyppi"
+    (let [entry-types (session/get :entry-types)]
+      [:select {:field :list :id :entry.type}
+       (for [type entry-types]
+         ^{:key (type :table)}
+         [:option {:key (type :table)}
+          (type :name)])
+       ])]
+
+   (text-input :value "Arvo")
+
+   ])
 
 (defn add-entry-page []
-  (let [new-entry (atom initial-state)]
-
+  (let [new-entry (atom initial-entry)]
     (fn []
       [:div
-       [bind-fields form new-entry
-        (fn [_ _ _] (session/put! :saved? false) nil)]
+       [bind-fields entry-form new-entry
+        (fn [_ _ _] (session/put! :saved? false) nil)
+
+        ;; Bind to change on entry type
+        (fn [id value doc]
+          (when (= id '(:entry :type))
+            (log (str doc))
+            (log id)
+            (log value)
+            (assoc-in doc [:entry :type] value)
+            )
+          )
+        ]
+
        (if (session/get :saved?)
          [:p "Saved"]
+
          [:button.btn.btn-success.btn-lg.btn-block.top-margin
           {:type "submit"
            :onClick (save-entry new-entry)}
           "Tallenna"])
        [cancel]
-       ])))
+       ])
+    ))

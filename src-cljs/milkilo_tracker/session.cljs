@@ -6,27 +6,27 @@
 
 (def state
   (atom
-   {:entry_types
-    [{:name "Kommentti" :table "comment" :input-type (keyword "text")
+   {:entry-types
+    [{:name "Kommentti" :table "comment" :input-type (keyword "textarea")
       :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun \\
                      merkintätyypin yhteydessä."}
      {:name "Aktiivilietemittaus" :table "silt_active_ml_per_l"
-      :input-type (keyword "number") :unit "ml per litra"
+      :input-type (keyword "numeric") :unit "ml per litra"
       :description "Aktiivilietteen mittaus"}
      {:name "Poistopumppaus" :table "silt_surplus_removal_l"
-      :input-type (keyword "number") :unit "litraa"
+      :input-type (keyword "numeric") :unit "litraa"
       :description "Ylijäämälietteen poistomäärä litroina."}
      {:name "Pumpun käyttötunnit" :table "pump_usage_hours"
-      :input-type (keyword "number") :unit "tuntia"
+      :input-type (keyword "numeric") :unit "tuntia"
       :description "Pumpun käyttötuntilaskurin lukema"}
      {:name "Kirkasvesinäyte" :table "water_quality"
-      :input-type (keyword "number") :unit "1-3"
+      :input-type (keyword "numeric") :unit "1-3"
       :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
      {:name "Ferrosulfaatin määrä" :table "ferrosulphate_level_percent"
-      :input-type (keyword "number") :unit "prosenttiluku"
+      :input-type (keyword "numeric") :unit "prosenttiluku"
       :description "Ferrosulfaattimittarin prosenttilukema"}
      {:name "Ferrosulfaatin lisäys" :table "ferrosulphate_addition_kg"
-      :input-type (keyword "number") :unit "kiloa"
+      :input-type (keyword "numeric") :unit "kiloa"
       :description "Ferrosulfaatin määrän lisäys kiloina."}]}))
 
 (defn get [k & [default]]

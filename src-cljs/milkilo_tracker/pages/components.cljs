@@ -15,7 +15,7 @@
     [:a {:on-click #(dispatch! "#/")} "Dashboard"]]
    (if-let [bread (session/get :bread)]
      [:li.active bread])
-   
+
    ])
 
 (defn cancel []
@@ -34,6 +34,5 @@
        ))
 
 (defn date-input []
-  (row "Päivämäärä"
-       [:div.input-lg {:field :datepicker :id :entry-date :date-format "dd/mm/yyyy"
-                       :inline true :auto-close? true}]))
+  [:div.input-lg {:field :datepicker :id :entry.date
+                  :date-format "dd/mm/yyyy" :inline true :auto-close? true}])
