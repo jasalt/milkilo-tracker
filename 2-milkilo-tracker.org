@@ -37,21 +37,21 @@ Ideaalisimmassa tapauksessa puhdistamojärjestelmiä rakentava [[http://www.atom
 Applikaatio ilmoittaa käyttäjälle sähköpostitse kun mittaus tulisi suorittaa, mikäli viimeisimmästä mittauksesta on kulunut tietyn verran aikaa.
 * A
 Data entry and alerting.
-** Refactor client
+** DONE Refactor client
 http://yogthos.net/posts/2014-08-14-Routing-With-Secretary.html
 *** DONE Separate NS's
-** DB initialization
+** DONE DB initialization
 *** DONE Connection
 *** DONE Init tables
 *** DONE Constraints
-** Login
+** DONE Login
 *** DONE Session handling
 *** DONE Users to DB
 *** DONE Check login from db
-*** TODO Show user sites on dashboard
+*** DONE Show user sites on dashboard
 On initial fetch, return proper data.
-** Entry CRUD
-*** TODO Add some data for testing
+** TODO Entry CRUD
+*** DONE Add some data for testing
 *** TODO Single entry page
 Could use some state switch. It's maybe bit ugly.
 Common components for both would be handy.

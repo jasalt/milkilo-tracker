@@ -6,7 +6,8 @@
   :url
   "http://example.com/FIXME"
   :dependencies
-  [[org.clojure/clojurescript "0.0-2760"]
+  [
+   ;; Backend libs
    [figwheel "0.2.2-SNAPSHOT"]
    [prone "0.8.0"]
    [log4j
@@ -24,17 +25,22 @@
    [org.postgresql/postgresql "9.3-1102-jdbc41"]
    [noir-exception "0.2.3"]
    [korma "0.4.0"]
-   [cljs-ajax "0.3.9"]
    [lib-noir "0.9.5"]
    [org.clojure/clojure "1.6.0"]
    [clj-time "0.9.0"]
    [environ "1.0.0"]
    [ring-server "0.4.0"]
    [org.clojure/core.cache "0.6.4"]
+
+   ;; Frontend libs
+   [org.clojure/clojurescript "0.0-2760"]
+   [cljs-ajax "0.3.9"]
    [com.cemerick/friend "0.2.1"]
    [reagent-forms "0.4.3"]
    [secretary "1.2.1"]
-   [ragtime "0.3.8"]]
+   [ragtime "0.3.8"]
+   [com.andrewmcveigh/cljs-time "0.3.2"]
+   ]
   :repl-options
   {:init-ns milkilo-tracker.repl}
   :jvm-opts
