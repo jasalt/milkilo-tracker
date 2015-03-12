@@ -4,8 +4,10 @@
    [reagent.core :as reagent :refer [atom]]
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
-   [milkilo-tracker.pages.components :refer [text-input date-input
-                                             cancel row]]
+   [milkilo-tracker.pages.components :refer [text-input
+                                             date-input
+                                             cancel row
+                                             ]]
    [milkilo-tracker.utils :refer [log]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]
@@ -30,41 +32,85 @@
                                             (:status resp)))
                       (session/put! :saved? true))})))
 
-(def entry-form
+(def entry-type-selector
   [:div
-   [row "Päivämäärä"
-    (date-input)]
-
    [row "Merkintätyyppi"
     (let [entry-types (session/get :entry-types)]
       [:select {:field :list :id :entry.type}
        (for [type entry-types]
          ^{:key (type :table)}
          [:option {:key (type :table)}
-          (type :name)])
-       ])]
+          (type :name)])])]])
+
+(def entry-form
+  [:div
+   [row "Päivämäärä"
+    (date-input)]
 
    (text-input :value "Arvo")
 
    ])
 
+;; (def entry []
+;;   [:div
+
+;;    ]
+;;   [bind-fields [row "Päivämäärä" (date-input)]
+
+
+;;    new-entry
+;;         ;;; Handlers
+;;    (fn [_ _ _] (session/put! :saved? false) nil)
+
+;;    ;; Bind to change on entry type
+;;    (fn [id value doc]
+;;      (when (= id '(:entry :type))
+;;        (log (str doc))
+;;        (log id)
+;;        (log value)
+;;        (assoc-in doc [:entry :type] value)
+;;        )
+;;      )
+;;    ]
+;;   )
+
+
+
 (defn add-entry-page []
   (let [new-entry (atom initial-entry)]
     (fn []
       [:div
-       [bind-fields entry-form new-entry
-        (fn [_ _ _] (session/put! :saved? false) nil)
+       [:p (str @new-entry)]
 
-        ;; Bind to change on entry type
+       [bind-fields entry-type-selector new-entry
+        ;; Any change made will falsify :saved?
+        (fn [_ _ _] (session/put! :saved? false) nil)
+        ;; Bind to entry type change
         (fn [id value doc]
           (when (= id '(:entry :type))
-            (log (str doc))
-            (log id)
             (log value)
             (assoc-in doc [:entry :type] value)
             )
-          )
-        ]
+          )]
+
+
+
+       (if-let [entry-type ((@new-entry :entry) :type)
+
+                ]
+         (let [entry-types (session/get :entry-types)]
+           [:div
+            [:p (str entry-type)]
+            [:p (str entry-types)]
+
+            ;;[entry-field entry-type]
+            ])
+         ;; TODO combine this to value
+
+         )
+
+
+       ;; Split component states
 
        (if (session/get :saved?)
          [:p "Saved"]

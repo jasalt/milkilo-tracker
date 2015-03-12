@@ -4,30 +4,38 @@
   (:require
    [reagent.core :as reagent :refer [atom]]))
 
-(def state
-  (atom
-   {:entry-types
-    [{:name "Kommentti" :table "comment" :input-type (keyword "textarea")
-      :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun \\
+(def entry-types-vector
+  [{:name "Kommentti" :table "comment" :input-type (keyword "textarea")
+    :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun \\
                      merkintätyypin yhteydessä."}
-     {:name "Aktiivilietemittaus" :table "silt_active_ml_per_l"
-      :input-type (keyword "numeric") :unit "ml per litra"
-      :description "Aktiivilietteen mittaus"}
-     {:name "Poistopumppaus" :table "silt_surplus_removal_l"
-      :input-type (keyword "numeric") :unit "litraa"
-      :description "Ylijäämälietteen poistomäärä litroina."}
-     {:name "Pumpun käyttötunnit" :table "pump_usage_hours"
-      :input-type (keyword "numeric") :unit "tuntia"
-      :description "Pumpun käyttötuntilaskurin lukema"}
-     {:name "Kirkasvesinäyte" :table "water_quality"
-      :input-type (keyword "numeric") :unit "1-3"
-      :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
-     {:name "Ferrosulfaatin määrä" :table "ferrosulphate_level_percent"
-      :input-type (keyword "numeric") :unit "prosenttiluku"
-      :description "Ferrosulfaattimittarin prosenttilukema"}
-     {:name "Ferrosulfaatin lisäys" :table "ferrosulphate_addition_kg"
-      :input-type (keyword "numeric") :unit "kiloa"
-      :description "Ferrosulfaatin määrän lisäys kiloina."}]}))
+   {:name "Aktiivilietemittaus" :table "silt_active_ml_per_l"
+    :input-type (keyword "numeric") :unit "ml per litra"
+    :description "Aktiivilietteen mittaus"}
+   {:name "Poistopumppaus" :table "silt_surplus_removal_l"
+    :input-type (keyword "numeric") :unit "litraa"
+    :description "Ylijäämälietteen poistomäärä litroina."}
+   {:name "Pumpun käyttötunnit" :table "pump_usage_hours"
+    :input-type (keyword "numeric") :unit "tuntia"
+    :description "Pumpun käyttötuntilaskurin lukema"}
+   {:name "Kirkasvesinäyte" :table "water_quality"
+    :input-type (keyword "numeric") :unit "1-3"
+    :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
+   {:name "Ferrosulfaatin määrä" :table "ferrosulphate_level_percent"
+    :input-type (keyword "numeric") :unit "prosenttiluku"
+    :description "Ferrosulfaattimittarin prosenttilukema"}
+   {:name "Ferrosulfaatin lisäys" :table "ferrosulphate_addition_kg"
+    :input-type (keyword "numeric") :unit "kiloa"
+    :description "Ferrosulfaatin määrän lisäys kiloina."}]
+  )
+
+
+(def state
+  (atom {:entry-types
+         ;; TODO could be cleaner as a map
+         entry-types-vector
+         }
+        )
+  )
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))

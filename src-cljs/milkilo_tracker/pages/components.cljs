@@ -33,6 +33,15 @@
        [:input.form-control.input-lg {:field :text :id id}]
        ))
 
+(defn num-input [id label]
+  (row label
+       [:input.form-control.input-lg {:field :numeric :id id}]
+       ))
+
 (defn date-input []
   [:div.input-lg {:field :datepicker :id :entry.date
                   :date-format "dd/mm/yyyy" :inline true :auto-close? true}])
+
+(defn entry-field [entry-type]
+  [:p "Tähän tyypit"]
+  )
