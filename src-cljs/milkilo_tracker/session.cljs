@@ -4,38 +4,39 @@
   (:require
    [reagent.core :as reagent :refer [atom]]))
 
-(def entry-types-vector
-  [{:name "Kommentti" :table "comment" :input-type (keyword "textarea")
-    :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun \\
+(def entry-types-map
+  {
+   :comment 
+   {:name "Kommentti" :input-type (keyword "textarea")
+    :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun
                      merkintätyypin yhteydessä."}
-   {:name "Aktiivilietemittaus" :table "silt_active_ml_per_l"
+   :silt_active_ml_per_l 
+   {:name "Aktiivilietemittaus" 
     :input-type (keyword "numeric") :unit "ml per litra"
     :description "Aktiivilietteen mittaus"}
-   {:name "Poistopumppaus" :table "silt_surplus_removal_l"
+   :silt_surplus_removal_l 
+   {:name "Poistopumppaus" 
     :input-type (keyword "numeric") :unit "litraa"
     :description "Ylijäämälietteen poistomäärä litroina."}
-   {:name "Pumpun käyttötunnit" :table "pump_usage_hours"
+   :pump_usage_hours 
+   {:name "Pumpun käyttötunnit" 
     :input-type (keyword "numeric") :unit "tuntia"
     :description "Pumpun käyttötuntilaskurin lukema"}
-   {:name "Kirkasvesinäyte" :table "water_quality"
+   :water_quality 
+   {:name "Kirkasvesinäyte" 
     :input-type (keyword "numeric") :unit "1-3"
     :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
-   {:name "Ferrosulfaatin määrä" :table "ferrosulphate_level_percent"
+   :ferrosulphate_level_percent 
+   {:name "Ferrosulfaatin määrä" 
     :input-type (keyword "numeric") :unit "prosenttiluku"
     :description "Ferrosulfaattimittarin prosenttilukema"}
-   {:name "Ferrosulfaatin lisäys" :table "ferrosulphate_addition_kg"
+   :ferrosulphate_addition_kg 
+   {:name "Ferrosulfaatin lisäys" 
     :input-type (keyword "numeric") :unit "kiloa"
-    :description "Ferrosulfaatin määrän lisäys kiloina."}]
-  )
-
+    :description "Ferrosulfaatin määrän lisäys kiloina."}})
 
 (def state
-  (atom {:entry-types
-         ;; TODO could be cleaner as a map
-         entry-types-vector
-         }
-        )
-  )
+  (atom {:entry-types entry-types-map}))
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))

@@ -34,13 +34,18 @@
 
 (def entry-type-selector
   [:div
-   [row "Merkintätyyppi"
-    (let [entry-types (session/get :entry-types)]
+   (let [options
+         ;; Convert map into array for (for)
+         (map (fn [entry-type]
+                (let [table-name (first entry-type)
+                      value-map (second entry-type)]
+                  (assoc value-map :table table-name)))
+              (session/get :entry-types))]
+
+     [row "Merkintätyyppi"
       [:select {:field :list :id :entry.type}
-       (for [type entry-types]
-         ^{:key (type :table)}
-         [:option {:key (type :table)}
-          (type :name)])])]])
+       (for [type options] ^{:key (type :table)}
+            [:option {:key (type :table)} (type :name)])]])])
 
 (def entry-form
   [:div
@@ -88,26 +93,27 @@
         ;; Bind to entry type change
         (fn [id value doc]
           (when (= id '(:entry :type))
-            (log value)
+            ;;(log value)
             (assoc-in doc [:entry :type] value)
             )
           )]
 
 
 
-       (if-let [entry-type ((@new-entry :entry) :type)
+       ;; (if-let [entry-type ((@new-entry :entry) :type)
 
-                ]
-         (let [entry-types (session/get :entry-types)]
-           [:div
-            [:p (str entry-type)]
-            [:p (str entry-types)]
+       ;;          ]
+       ;;   ;;TODO A
+       ;;   ;; (let [entry-types (session/get :entry-types)]
+       ;;   ;;   [:div
+       ;;   ;;    [:p (str entry-type)]
+       ;;   ;;    [:p (str entry-types)]
 
-            ;;[entry-field entry-type]
-            ])
-         ;; TODO combine this to value
+       ;;   ;;    ;;[entry-field entry-type]
+       ;;   ;;    ])
+       ;;   ;; TODO combine this to value
 
-         )
+       ;;   )
 
 
        ;; Split component states
