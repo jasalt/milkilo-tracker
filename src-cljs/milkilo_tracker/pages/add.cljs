@@ -4,7 +4,11 @@
    [reagent.core :as reagent :refer [atom]]
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
-   [milkilo-tracker.pages.components :refer [text-input date-input cancel row]]
+   [milkilo-tracker.pages.components :refer [text-input date-input
+                                             cancel row]]
+   [milkilo-tracker.utils :refer [log]]
+   [cljs-time.local :refer [local-now]]
+   [cljs-time.core :refer [day month year]]
    ))
 
 (defn selection-buttons [label id & items]
@@ -20,7 +24,8 @@
     (let [entry-types (session/get :entry_types)]
       [:select {:id "type-selection"} (for [type entry-types]
                                         ^{:key (type :table)}
-                                        [:option {:value (type :table)} (type :name)]
+                                        [:option {:value (type :table)}
+                                         (type :name)]
                                         )])]
    (text-input :value "Arvo")
    ])
@@ -30,19 +35,29 @@
     (POST (str js/context "/entry")
           {:params {:new-entry @new-entry}
            :handler (fn [resp]
-                      (.log js/console (str "Response status: " (:status resp)))
+                      (.log js/console (str "Response status: "
+                                            (:status resp)))
                       (session/put! :saved? true))})))
 
+(def initial-state
+  (let [now (local-now)]
+    {:entry-date
+     {:year (year now), 
+      :month (month now), 
+      :day (day now)}}))
+
 (defn add-entry-page []
-  (let [new-entry (atom {})]
+  (let [new-entry (atom initial-state)]
+
     (fn []
       [:div
        [bind-fields form new-entry
         (fn [_ _ _] (session/put! :saved? false) nil)]
        (if (session/get :saved?)
          [:p "Saved"]
-         [:button.btn.btn-success.btn-lg.btn-block.top-margin {:type "submit"
-                                                               :onClick (save-entry new-entry)}
+         [:button.btn.btn-success.btn-lg.btn-block.top-margin
+          {:type "submit"
+           :onClick (save-entry new-entry)}
           "Tallenna"])
        [cancel]
        ])))

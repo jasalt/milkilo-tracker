@@ -9,6 +9,7 @@
   [
    ;; Backend libs
    [figwheel "0.2.2-SNAPSHOT"]
+   [ragtime "0.3.8"]
    [prone "0.8.0"]
    [log4j
     "1.2.17"
@@ -38,7 +39,6 @@
    [com.cemerick/friend "0.2.1"]
    [reagent-forms "0.4.3"]
    [secretary "1.2.1"]
-   [ragtime "0.3.8"]
    [com.andrewmcveigh/cljs-time "0.3.2"]
    ]
   :repl-options
