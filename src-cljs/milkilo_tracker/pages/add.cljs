@@ -4,14 +4,11 @@
    [reagent.core :as reagent :refer [atom]]
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
-   [milkilo-tracker.pages.components :refer [text-input
-                                             date-input
-                                             cancel row
-                                             ]]
+   [milkilo-tracker.pages.components :refer [date-input
+                                             cancel row]]
    [milkilo-tracker.utils :refer [log]]
    [cljs-time.local :refer [local-now]]
-   [cljs-time.core :refer [day month year]]
-   ))
+   [cljs-time.core :refer [day month year]]))
 
 (def initial-entry
   (let [now (local-now)]
@@ -20,8 +17,7 @@
              :month (month now),
              :day (day now)}
       :type nil
-      :value nil}}
-    ))
+      :value nil}}))
 
 (defn save-entry [new-entry]
   (fn []
@@ -47,46 +43,23 @@
        (for [type options] ^{:key (type :table)}
             [:option {:key (type :table)} (type :name)])]])])
 
-(def entry-form
+(defn entry-form [input-type unit description]
   [:div
    [row "Päivämäärä"
     (date-input)]
-
-   (text-input :value "Arvo")
-
-   ])
-
-;; (def entry []
-;;   [:div
-
-;;    ]
-;;   [bind-fields [row "Päivämäärä" (date-input)]
-
-
-;;    new-entry
-;;         ;;; Handlers
-;;    (fn [_ _ _] (session/put! :saved? false) nil)
-
-;;    ;; Bind to change on entry type
-;;    (fn [id value doc]
-;;      (when (= id '(:entry :type))
-;;        (log (str doc))
-;;        (log id)
-;;        (log value)
-;;        (assoc-in doc [:entry :type] value)
-;;        )
-;;      )
-;;    ]
-;;   )
-
-
+   [row "Mittausarvo"
+    [:input.form-control.input-lg
+     {:field input-type :id :entry.value}]]
+   [:p unit]
+   [:p description]])
 
 (defn add-entry-page []
   (let [new-entry (atom initial-entry)]
     (fn []
       [:div
-       [:p (str @new-entry)]
+       [:p (str "current-doc is " @new-entry)]
 
+       ;; Entry type selector
        [bind-fields entry-type-selector new-entry
         ;; Any change made will falsify :saved?
         (fn [_ _ _] (session/put! :saved? false) nil)
@@ -98,26 +71,23 @@
             )
           )]
 
+       ;; Form field based on selected entry type
+       (if-let [this-type ((@new-entry :entry) :type)]
 
+         (let [entry-type (this-type (session/get :entry-types))]
+           [:p (str entry-type)]
+           [bind-fields
+            (entry-form (entry-type :input-type)
+                                    (entry-type :unit)
+                                    (entry-type :description))
+            new-entry
+            (fn [_ _ _] (session/put! :saved? false) nil)
+            ]
+           )
+         [:p "Tyyppiä ei määritelty. Jotain hajalla."]
+         )
 
-       ;; (if-let [entry-type ((@new-entry :entry) :type)
-
-       ;;          ]
-       ;;   ;;TODO A
-       ;;   ;; (let [entry-types (session/get :entry-types)]
-       ;;   ;;   [:div
-       ;;   ;;    [:p (str entry-type)]
-       ;;   ;;    [:p (str entry-types)]
-
-       ;;   ;;    ;;[entry-field entry-type]
-       ;;   ;;    ])
-       ;;   ;; TODO combine this to value
-
-       ;;   )
-
-
-       ;; Split component states
-
+       ;; Submit button
        (if (session/get :saved?)
          [:p "Saved"]
 
@@ -126,5 +96,4 @@
            :onClick (save-entry new-entry)}
           "Tallenna"])
        [cancel]
-       ])
-    ))
+       ])))
