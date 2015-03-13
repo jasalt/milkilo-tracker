@@ -5,8 +5,7 @@
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
    [milkilo-tracker.pages.components :refer [date-input
-                                             cancel row
-                                             entry-field]]
+                                             cancel row]]
    [milkilo-tracker.utils :refer [log]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
@@ -45,18 +44,25 @@
             [:option {:key (type :table)} (type :name)])]])
    [:br]])
 
+(def entry-field
+  [:div
+   [row "Mittausarvo"]
+   [:input.form-control.input-lg
+    {:field :text :id :entry.value}]]
+  )
+
 (defn add-entry-page []
-  (let [new-entry (atom initial-entry)]
+  (let [new-entry (atom initial-entry)
+        entry-types (session/get :entry-types)]
     (fn []
       [:div
-       
+
 
        [bind-fields [:div
                      [row "Päivämäärä"
                       (date-input)]
                      entry-type-selector
-                     [:input.form-control.input-lg
-                      {:field :text :id :entry.value}]
+                     entry-field
                      ]
         new-entry
         ;; Any change made will falsify :saved?
@@ -72,16 +78,23 @@
             )
           )]
 
-       [:p (str ((session/get :entry-types) ((@new-entry :entry) :type) ))]
-       
-       [:p (str "current-doc is " @new-entry)]
+       (let [current-type ((@new-entry :entry) :type)
+             current-entry-info (entry-types current-type)
+             description (:description current-entry-info)
+             unit (:unit current-entry-info)
+             ]
+         [row "Selite"
+          [:div.col-xs-6 [:h3 description]]
+          [:div.col-xs-6 [:h2.pull-right (str "Yksikkö: " unit)]]])
+
        ;; Submit button
        (if (session/get :saved?)
          [:p "Saved"]
-
          [:button.btn.btn-success.btn-lg.btn-block.top-margin
           {:type "submit"
            :onClick (save-entry new-entry)}
           "Tallenna"])
        [cancel]
-       ])))
+       [:p (str "testaus-tieto: " @new-entry)]
+       ]
+      )))
