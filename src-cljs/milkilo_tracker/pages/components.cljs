@@ -28,6 +28,25 @@
   [:div.input-lg {:field :datepicker :id :entry.date
                   :date-format "dd/mm/yyyy" :inline true :auto-close? true}])
 
-(defn entry-field [entry-type]
-  [:p "Tähän tyypit"]
-  [:p entry-type])
+(def entry-field
+  [:div
+   [row "Mittausarvo"]
+   [:input.form-control.input-lg
+    {:field :text :id :entry.value}]]
+  )
+
+(def entry-type-selector
+  [:div
+   (let [options
+         ;; Convert map into array for (for)
+         (map (fn [entry-type]
+                (let [table-name (first entry-type)
+                      value-map (second entry-type)]
+                  (assoc value-map :table table-name)))
+              (session/get :entry-types))]
+
+     [row "Merkintätyyppi"
+      [:select {:field :list :id :entry.type}
+       (for [type options] ^{:key (type :table)}
+            [:option {:key (type :table)} (type :name)])]])
+   [:br]])

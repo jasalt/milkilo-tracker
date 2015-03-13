@@ -5,7 +5,9 @@
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
    [milkilo-tracker.pages.components :refer [date-input
-                                             cancel row]]
+                                             cancel row
+                                             entry-field
+                                             entry-type-selector]]
    [milkilo-tracker.utils :refer [log]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
@@ -19,11 +21,28 @@
       :type nil
       :value nil}}))
 
+(defn validate-entry [entry]
+  (log entry)
+  true
+  ;; {:entry {:date {:year 2015, :month 3, :day 13}, :type :comment, :value "3341"}}
+  (let [value ((entry :entry) :value)
+        date ((entry :entry) :date)]
+    (if value
+      true
+      (do
+        (log value)
+        (.alert js/window "Mittausarvo puuttuu!")
+        nil)
+      )
+    ))
+
 (defn save-entry [new-entry]
   (fn []
-    (if (.confirm js/window (str "Tallenna mittaus "
-                                 ((@new-entry :entry) :value)))
-      
+    (if (and (validate-entry @new-entry)
+             (.confirm js/window (str "Tallenna mittaus "
+                                      ((@new-entry :entry) :value)))
+             )
+
       (POST (str js/context "/entry")
             {:params {:new-entry @new-entry}
              :handler (fn [resp]
@@ -31,36 +50,11 @@
                                               (:status resp)))
                         (session/put! :saved? true))}))))
 
-(def entry-type-selector
-  [:div
-   (let [options
-         ;; Convert map into array for (for)
-         (map (fn [entry-type]
-                (let [table-name (first entry-type)
-                      value-map (second entry-type)]
-                  (assoc value-map :table table-name)))
-              (session/get :entry-types))]
-
-     [row "Merkintätyyppi"
-      [:select {:field :list :id :entry.type}
-       (for [type options] ^{:key (type :table)}
-            [:option {:key (type :table)} (type :name)])]])
-   [:br]])
-
-(def entry-field
-  [:div
-   [row "Mittausarvo"]
-   [:input.form-control.input-lg
-    {:field :text :id :entry.value}]]
-  )
-
 (defn add-entry-page []
   (let [new-entry (atom initial-entry)
         entry-types (session/get :entry-types)]
     (fn []
       [:div
-
-
        [bind-fields [:div
                      [row "Päivämäärä"
                       (date-input)]
@@ -84,8 +78,7 @@
        (let [current-type ((@new-entry :entry) :type)
              current-entry-info (entry-types current-type)
              description (:description current-entry-info)
-             unit (:unit current-entry-info)
-             ]
+             unit (:unit current-entry-info)]
          [row "Selite"
           [:div.col-xs-6 [:h3 description]]
           [:div.col-xs-6 [:h2.pull-right (str "Yksikkö: " unit)]]])
@@ -99,5 +92,4 @@
           "Tallenna"])
        [cancel]
        [:p (str "testaus-tieto: " @new-entry)]
-       ]
-      )))
+       ])))
