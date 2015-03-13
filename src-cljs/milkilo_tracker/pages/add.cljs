@@ -5,7 +5,8 @@
    [reagent-forms.core :refer [bind-fields]]
    [ajax.core :refer [POST, GET]]
    [milkilo-tracker.pages.components :refer [date-input
-                                             cancel row]]
+                                             cancel row
+                                             entry-field]]
    [milkilo-tracker.utils :refer [log]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
@@ -41,52 +42,39 @@
      [row "Merkintätyyppi"
       [:select {:field :list :id :entry.type}
        (for [type options] ^{:key (type :table)}
-            [:option {:key (type :table)} (type :name)])]])])
-
-(defn entry-form [input-type unit description]
-  [:div
-   [row "Päivämäärä"
-    (date-input)]
-   [row "Mittausarvo"
-    [:input.form-control.input-lg
-     {:field input-type :id :entry.value}]]
-   [:p unit]
-   [:p description]])
+            [:option {:key (type :table)} (type :name)])]])
+   [:br]])
 
 (defn add-entry-page []
   (let [new-entry (atom initial-entry)]
     (fn []
       [:div
-       [:p (str "current-doc is " @new-entry)]
+       
 
-       ;; Entry type selector
-       [bind-fields entry-type-selector new-entry
+       [bind-fields [:div
+                     [row "Päivämäärä"
+                      (date-input)]
+                     entry-type-selector
+                     [:input.form-control.input-lg
+                      {:field :text :id :entry.value}]
+                     ]
+        new-entry
         ;; Any change made will falsify :saved?
-        (fn [_ _ _] (session/put! :saved? false) nil)
+        (fn [_ _ _]
+          (session/put! :saved? false)
+          nil)
         ;; Bind to entry type change
         (fn [id value doc]
           (when (= id '(:entry :type))
-            ;;(log value)
+            (log value)
+            (session/put! :current-entry-type value)
             (assoc-in doc [:entry :type] value)
             )
           )]
 
-       ;; Form field based on selected entry type
-       (if-let [this-type ((@new-entry :entry) :type)]
-
-         (let [entry-type (this-type (session/get :entry-types))]
-           [:p (str entry-type)]
-           [bind-fields
-            (entry-form (entry-type :input-type)
-                                    (entry-type :unit)
-                                    (entry-type :description))
-            new-entry
-            (fn [_ _ _] (session/put! :saved? false) nil)
-            ]
-           )
-         [:p "Tyyppiä ei määritelty. Jotain hajalla."]
-         )
-
+       [:p (str ((session/get :entry-types) ((@new-entry :entry) :type) ))]
+       
+       [:p (str "current-doc is " @new-entry)]
        ;; Submit button
        (if (session/get :saved?)
          [:p "Saved"]
