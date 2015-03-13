@@ -21,12 +21,15 @@
 
 (defn save-entry [new-entry]
   (fn []
-    (POST (str js/context "/entry")
-          {:params {:new-entry @new-entry}
-           :handler (fn [resp]
-                      (.log js/console (str "Response status: "
-                                            (:status resp)))
-                      (session/put! :saved? true))})))
+    (if (.confirm js/window (str "Tallenna mittaus "
+                                 ((@new-entry :entry) :value)))
+      
+      (POST (str js/context "/entry")
+            {:params {:new-entry @new-entry}
+             :handler (fn [resp]
+                        (.log js/console (str "Response status: "
+                                              (:status resp)))
+                        (session/put! :saved? true))}))))
 
 (def entry-type-selector
   [:div
@@ -89,7 +92,7 @@
 
        ;; Submit button
        (if (session/get :saved?)
-         [:p "Saved"]
+         [:h1 "Tallennettu!"]
          [:button.btn.btn-success.btn-lg.btn-block.top-margin
           {:type "submit"
            :onClick (save-entry new-entry)}

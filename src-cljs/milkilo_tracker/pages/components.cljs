@@ -16,7 +16,7 @@
 
 (defn cancel []
   [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
-   {:on-click #(dispatch! "#/")} "Peruuta"]
+   {:on-click #(dispatch! "#/")} "Takaisin"]
   )
 
 (defn row [label & body]
