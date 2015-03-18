@@ -30,13 +30,21 @@
   (let [user-id (:id (friend/current-authentication))]
     (db/get-user-data user-id)))
 
-(defn save-entry [doc]
-  (pprint doc)
-  {:status "Post successful"})
-
-(defn save-document [doc]
-  (pprint doc)
-  {:status "ok"})
+(defn save-entry [entry]
+  (let [user-id (:id (friend/current-authentication))
+        user-sites (->> (db/get-administered-sites user-id)
+                       (map #(first (vals (select-keys % [:id]))))
+                       vec)]
+    ;; Check users access for site
+    (./pprint entry)
+    (./pprint user-sites)
+    (if (some #(= (entry :site_id ) %) user-sites)
+      (./pprint "JOOO")
+      (./pprint "EI Lupaa")
+      )
+    )
+  {:status "ok"}  ;; TODO respond status
+  )
 
 (defroutes home-routes
   (GET "/" [] (home-page))
