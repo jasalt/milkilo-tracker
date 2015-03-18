@@ -32,20 +32,28 @@
   (let [user-id (:id (friend/current-authentication))]
     (db/get-user-data user-id)))
 
+(defn str->int [str]
+  "Convert string to number if possible, or just return the string."
+  (let [result (read-string str)]
+       (if (number? result) result str)))
+
 (defn save-entry [entry]
   (let [user-id (:id (friend/current-authentication))
         user-sites (->> (db/get-administered-sites user-id)
                         (map #(first (vals (select-keys % [:id]))))
                         vec)]
+    
     ;; Check users access for site
     (if (some #(= (entry :site_id ) %) user-sites)
       (let [new-db-entry (assoc (select-keys entry [:site_id])
-                                (entry :type) (entry :value)
                                 :date (tc/to-sql-time
                                        (t/local-date ((entry :date) :year)
                                                      ((entry :date) :month)
-                                                     ((entry :date) :day))))]
+                                                     ((entry :date) :day)))
+                                ;; TODO hack fix to convert strings numbers
+                                (entry :type) (str->int (entry :value)))]
         (println "Saving")
+        (pprint entry)
         (db/insert-entry new-db-entry)
         {:status 200})
       (do
