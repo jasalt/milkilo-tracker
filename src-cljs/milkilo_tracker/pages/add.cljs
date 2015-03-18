@@ -33,7 +33,7 @@
 (defn validate-entry [entry]
   ;; Input validation
   (log (str "validating " entry))
-  
+
   ;; {:entry {:date {:year 2015, :month 3, :day 13}, :type :comment, :value "3341"}}
   (let [entry-map (entry :entry)
         value (entry-map :value)
@@ -43,13 +43,16 @@
     (if value
       (do
         (case input-type
-          :numeric (if (and (<= value 1000) (>= value 0))
-                     true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 0-1000"))
+          ;; TODO refactor value range validation
+          :numeric (do (if (= type :water_quality)
+                         (if (and (<= value 3) (>= value 1))
+                           true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 1-3"))
+                         (if (and (<= value 1000) (>= value 0))
+                           true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 0-1000"))))
           ;; Text length between 1-1001
           :text (if (or (clojure.string/blank? value) (> (.-length value) 1000))
                   (.alert js/window "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000.")
-                  true
-                  )
+                  true)
           nil
           )
         )
@@ -63,8 +66,7 @@
   (fn []
     (if (and (validate-entry @new-entry)
              (.confirm js/window (str "Tallenna mittaus "
-                                      ((@new-entry :entry) :value)))
-             )
+                                      ((@new-entry :entry) :value))))
 
       (POST (str js/context "/entry")
             {:params (@new-entry :entry)
