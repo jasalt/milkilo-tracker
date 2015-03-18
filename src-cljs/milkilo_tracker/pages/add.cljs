@@ -67,7 +67,7 @@
              )
 
       (POST (str js/context "/entry")
-            {:params {:new-entry @new-entry}
+            {:params (@new-entry :entry)
              :handler (fn [resp]
                         (.log js/console (str "Response status: "
                                               (:status resp)))
