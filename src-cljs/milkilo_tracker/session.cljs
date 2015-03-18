@@ -7,7 +7,7 @@
 (def entry-types-map
   {
    :comment 
-   {:name "Kommentti" :input-type (keyword "textarea") :unit "vapaa teksti"
+   {:name "Kommentti" :input-type (keyword "text") :unit "vapaa teksti"
     :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun
                      merkintätyypin yhteydessä."}
    :silt_active_ml_per_l 
