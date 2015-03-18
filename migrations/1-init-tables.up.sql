@@ -25,7 +25,7 @@ viewers        integer[]
 
 CREATE TABLE entries (
 id                          serial PRIMARY KEY,
-entry_date                  timestamp NOT NULL DEFAULT current_timestamp,
+date                        timestamp NOT NULL DEFAULT current_timestamp,
 site_id                     integer NOT NULL,
 comment                     varchar(1000),
 silt_active_ml_per_l        integer,

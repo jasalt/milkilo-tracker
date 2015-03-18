@@ -29,7 +29,7 @@ $$ LANGUAGE 'plpgsql' STRICT;
 
 -- add user permission
 DO $do$ BEGIN FOR i IN 1 .. 9 LOOP
-INSERT INTO entries(site_id, entry_date, silt_active_ml_per_l)
+INSERT INTO entries(site_id, date, silt_active_ml_per_l)
       VALUES (
       (SELECT id from sites WHERE name='Testipuhdistamo'),
       (SELECT date(now() - '1 year'::interval + i * '4 weeks'::interval)),
