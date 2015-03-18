@@ -53,14 +53,8 @@
           :text (if (or (clojure.string/blank? value) (> (.-length value) 1000))
                   (.alert js/window "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000.")
                   true)
-          nil
-          )
-        )
-      (do
-        (.alert js/window "Mittausarvo puuttuu!")
-        nil)
-      )
-    ))
+          nil))
+      (do (.alert js/window "Mittausarvo puuttuu!") nil))))
 
 (defn save-entry [new-entry]
   (fn []
@@ -104,9 +98,12 @@
        (let [current-entry-info (get-entry-info ((@new-entry :entry) :type))
              description (:description current-entry-info)
              unit (:unit current-entry-info)]
-         [row "Selite"
-          [:div.col-xs-6 [:h3 description]]
-          [:div.col-xs-6 [:h2.pull-right (str "Yksikkö: " unit)]]])
+         [:span.span-lg "Selite"]
+         [:br]
+         [:div.row
+          [:div.col-xs-6 [:h4 description]]
+          [:div.col-xs-6 [:h4 (str "Yksikkö: " unit)]]
+          ])
 
        ;; Submit button
        (if (session/get :saved?)
