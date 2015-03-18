@@ -29,6 +29,7 @@ Add two database roles `dbuser` and `dbadmin` with password `dbpass`. Authorize 
     CREATE USER dbuser WITH PASSWORD 'dbpass';
     GRANT ALL PRIVILEGES ON SCHEMA public to dbuser;
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO  dbuser;
+    GRANT USAGE, SELECT ON SEQUENCE entries_id_seq TO dbuser;
 
     CREATE USER dbadmin WITH PASSWORD 'dbpass' SUPERUSER;
 
