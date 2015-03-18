@@ -1,3 +1,5 @@
+;; Page for adding entries
+;; TODO flatten out unnecessary root level :entry key from data structure
 (ns milkilo-tracker.pages.add
   (:require
    [milkilo-tracker.session :as session]
@@ -19,15 +21,14 @@
      {:date {:year (year now),
              :month (month now),
              :day (day now)}
+      :site_id nil
       :type nil
       :value nil}}))
 
 (defn get-entry-info [entry-key]
   ;; Helper function that returns entry type information of the given entry key
   (let [entry-types (session/get :entry-types)]
-    (entry-types entry-key)
-    )
-  )
+    (entry-types entry-key)))
 
 (defn validate-entry [entry]
   ;; Input validation
@@ -41,7 +42,6 @@
         input-type ((get-entry-info type) :input-type)]
     (if value
       (do
-        (log input-type)
         (case input-type
           :numeric (if (and (<= value 1000) (>= value 0))
                      true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 0-1000"))
@@ -74,9 +74,11 @@
                         (session/put! :saved? true))}))))
 
 (defn add-entry-page []
-  (let [new-entry (atom initial-entry)
+  (let [site-id ((session/get :site) :id) ;; TODO Handle multiple sites
+        new-entry (atom (assoc-in initial-entry [:entry :site_id] site-id))
         entry-types (session/get :entry-types)]
     (fn []
+      (log site-id)
       [:div
        [bind-fields [:div
                      [row "Päivämäärä"
@@ -92,7 +94,6 @@
         ;; Bind to entry type change
         (fn [id value doc]
           (when (= id '(:entry :type))
-            (log value)
             (session/put! :current-entry-type value)
             (assoc-in doc [:entry :type] value)
             )

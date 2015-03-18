@@ -58,6 +58,7 @@
   [(session/get :current-page)])
 
 (defn init-data-handler [resp]
+  "Receive initial user data from server and put it to session."
   ;; TODO Handle multiple user sites etc.
   (.log js/console (str resp)) 
   (let [site-data (first resp)]
@@ -69,9 +70,10 @@
   (enable-console-print!)
   (secretary/set-config! :prefix "#")
   
+  (GET "/entries" {:handler init-data-handler})
+  
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil)
-  (GET "/entries" {:handler init-data-handler})
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar")))
 
