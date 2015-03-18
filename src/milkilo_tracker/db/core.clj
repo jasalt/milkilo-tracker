@@ -43,7 +43,6 @@
                                            (comp not nil? val) entry)))
                      without-site-id)]
     cleaned))
-;;(pprint (get-entries 1))
 
 (defn get-user-data [user-id]
   ;; Get data of all users administered sites with entries.
@@ -53,4 +52,7 @@
      (fn [site]
        (merge site {:entries (get-entries (site :id))}))
      cleaned-user-sites)))
-;;(pprint (get-user-data 3))
+
+(defn insert-entry [entry]
+  (insert entries
+          (values entry)))
