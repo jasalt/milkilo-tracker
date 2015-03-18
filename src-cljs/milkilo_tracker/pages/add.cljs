@@ -13,6 +13,7 @@
    [cljs-time.core :refer [day month year]]))
 
 (def initial-entry
+  ;; Initialize new entry with current date
   (let [now (local-now)]
     {:entry
      {:date {:year (year now),
@@ -21,16 +22,38 @@
       :type nil
       :value nil}}))
 
+(defn get-entry-info [entry-key]
+  ;; Helper function that returns entry type information of the given entry key
+  (let [entry-types (session/get :entry-types)]
+    (entry-types entry-key)
+    )
+  )
+
 (defn validate-entry [entry]
-  (log entry)
-  true
+  ;; Input validation
+  (log (str "validating " entry))
+  
   ;; {:entry {:date {:year 2015, :month 3, :day 13}, :type :comment, :value "3341"}}
-  (let [value ((entry :entry) :value)
-        date ((entry :entry) :date)]
+  (let [entry-map (entry :entry)
+        value (entry-map :value)
+        date (entry-map :date)
+        type (entry-map :type)
+        input-type ((get-entry-info type) :input-type)]
     (if value
-      true
       (do
-        (log value)
+        (log input-type)
+        (case input-type
+          :numeric (if (and (<= value 1000) (>= value 0))
+                     true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 0-1000"))
+          ;; Text length between 1-1001
+          :text (if (or (clojure.string/blank? value) (> (.-length value) 1000))
+                  (.alert js/window "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000.")
+                  true
+                  )
+          nil
+          )
+        )
+      (do
         (.alert js/window "Mittausarvo puuttuu!")
         nil)
       )
@@ -75,8 +98,7 @@
             )
           )]
 
-       (let [current-type ((@new-entry :entry) :type)
-             current-entry-info (entry-types current-type)
+       (let [current-entry-info (get-entry-info ((@new-entry :entry) :type))
              description (:description current-entry-info)
              unit (:unit current-entry-info)]
          [row "Selite"
