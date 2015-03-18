@@ -1,3 +1,4 @@
+-- Test user password is 'secret'
 INSERT INTO users (email, password, first_name, last_name)
 VALUES ('viewer@user.com', '$2a$10$MYXZbtDeXhfjhBiGoT4Unuc4dWeGOn.XiIwNy98oonAsMyD6nTtRq', 'Viewer', 'John');
 
