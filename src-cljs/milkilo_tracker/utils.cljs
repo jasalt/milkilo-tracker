@@ -2,6 +2,7 @@
   (:require
    [reagent.core :as reagent :refer [atom]]
    [ajax.core :refer [GET]]
+   [milkilo-tracker.session :as session]
    [goog.net.cookies]
    ))
 

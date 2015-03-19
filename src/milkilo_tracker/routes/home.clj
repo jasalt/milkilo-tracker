@@ -55,7 +55,7 @@
         (println "Saving")
         (pprint entry)
         (db/insert-entry new-db-entry)
-        {:status 200})
+        new-db-entry)
       (do
         (println "Unauthorized")
         {:status 500}))))
