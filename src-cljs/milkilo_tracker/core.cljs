@@ -66,6 +66,7 @@
     (session/put! :site (dissoc site-data :entries))))
 
 (defn init! []
+  (.initializeTouchEvents js/React true)
   (js/console.log "(core/init!)")
   (enable-console-print!)
   (secretary/set-config! :prefix "#")
