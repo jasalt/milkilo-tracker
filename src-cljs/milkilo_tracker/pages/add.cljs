@@ -10,7 +10,7 @@
                                              cancel row
                                              entry-field
                                              entry-type-selector]]
-   [milkilo-tracker.utils :refer [log]]
+   [milkilo-tracker.utils :refer [log get-entry-info]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
 
@@ -24,11 +24,6 @@
       :site_id nil
       :type nil
       :value nil}}))
-
-(defn get-entry-info [entry-key]
-  ;; Helper function that returns entry type information of the given entry key
-  (let [entry-types (session/get :entry-types)]
-    (entry-types entry-key)))
 
 (defn validate-entry [entry]
   ;; Input validation

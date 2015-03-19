@@ -4,7 +4,8 @@
    [reagent.core :as reagent :refer [atom]]
    [secretary.core :as secretary]
    [clojure.string :as str]
-   [milkilo-tracker.utils :refer [get-cookie log logout]]
+   [milkilo-tracker.utils :refer [get-cookie log logout
+                                  get-entry-info]]
    ))
 
 (defn dashboard-page []
@@ -12,12 +13,31 @@
    [:br]
    [:button.btn.btn-lg.btn-primary.btn-block
     {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
-   
+
    ;; [:div.chart-container
    ;;  [:p "Diagram:"]
    ;;  [:img.img-responsive
    ;;   {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
    ;;    :on-click #(secretary/dispatch! "#/history")}]]
+
+   (if-let [entries (session/get :entries)]
+     ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
+     (let [last-entries (reverse entries)
+           entry-types (session/get :entry-types)]
+       [:div
+        [:h4 "Edelliset merkinnät:"]
+        (for [entry last-entries]
+          ^{:key entry}
+          (let [entry-name (:name (entry-types (first (keys (dissoc entry :date :id)))))
+                entry-value (first (vals (dissoc entry :date :id)))
+                entry-date (:date entry)]
+            [:div.well.well-sm
+             [:h3 (str entry-name)]
+             [:h4 (str "Arvo: " entry-value)]
+             [:h5 (str entry-date)]
+             ]
+            )
+          )]))
 
    (if-let [site (session/get :site)]
      [:div
@@ -25,17 +45,9 @@
       [:p (str site)]]
      [:p "Puhdistamo puuttuu (tai sen tietoja ladataan)"])
    
-   (if-let [entries (session/get :entries)]
-     ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed. 
-     (let [last-entries (reverse entries)]
-       [:div
-      [:h4 "Edelliset merkinnät:"]
-      (for [entry last-entries]
-        ^{:key entry} [:p (str entry)])]))
-
    (let [before-at (first (str/split (get-cookie "email") "%40"))
          name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
      [:a.text-center {:on-click #(let [message "Oletko varma että haluat kirjautua ulos?"
-                                      dialog-result (.confirm js/window message)]
-                                  (when dialog-result (logout)))}
+                                       dialog-result (.confirm js/window message)]
+                                   (when dialog-result (logout)))}
       [:h4 [:small (str "Kirjaudu ulos ("name")")]]])])
