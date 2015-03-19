@@ -39,27 +39,31 @@
         value (entry-map :value)
         date (entry-map :date)
         type (entry-map :type)
-        input-type ((get-entry-info type) :input-type)]
+        entry-info (get-entry-info type)]
     (if value
       (do
-        (case input-type
-          ;; TODO refactor value range validation
-          :numeric (do (if (= type :water_quality)
-                         (if (and (<= value 3) (>= value 1))
-                           true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 1-3"))
-                         (if (and (<= value 1000) (>= value 0))
-                           true (.alert js/window "Virheellinen numeroarvo. Anna lukema väliltä 0-1000"))))
-          ;; Text length between 1-1001
-          :text (if (or (clojure.string/blank? value) (> (.-length value) 1000))
-                  (.alert js/window "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000.")
-                  true)
+        (case (entry-info :input-type)
+          :numeric
+          (let [lower-limit (first (entry-info :range))
+                upper-limit (second (entry-info :range))]
+            (if (or (< value lower-limit) (> value upper-limit))
+              (.alert js/window
+                      (str "Virheellinen numeroarvo. Anna lukema väliltä "
+                           lower-limit"-"upper-limit))
+              true))
+          :text
+          (if (or (clojure.string/blank? value) (> (.-length value) 1000))
+            (.alert js/window
+                    "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000.")
+            true)
+
           nil))
       (do (.alert js/window "Mittausarvo puuttuu!") nil))))
 
 (defn save-entry [new-entry]
   (fn []
     (if (and (validate-entry @new-entry)
-             (.confirm js/window (str "Tallenna mittaus "
+             (.confirm js/window (str "Tallenna mittausarvo "
                                       ((@new-entry :entry) :value))))
 
       (POST (str js/context "/entry")

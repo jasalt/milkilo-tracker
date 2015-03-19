@@ -11,27 +11,27 @@
     :description "Vapaa kommentti, voidaan käyttää yksinään tai jonkin muun
                      merkintätyypin yhteydessä."}
    :silt_active_ml_per_l 
-   {:name "Aktiivilietemittaus" 
+   {:name "Aktiivilietemittaus" :range [0 1000]
     :input-type (keyword "numeric") :unit "ml per litra"
     :description "Aktiivilietteen mittaus"}
    :silt_surplus_removal_l 
-   {:name "Poistopumppaus" 
+   {:name "Poistopumppaus" :range [1 1000]
     :input-type (keyword "numeric") :unit "litraa"
     :description "Ylijäämälietteen poistomäärä litroina."}
    :pump_usage_hours 
-   {:name "Pumpun käyttötunnit" 
+   {:name "Pumpun käyttötunnit" :range [1 9999999]
     :input-type (keyword "numeric") :unit "tuntia"
     :description "Pumpun käyttötuntilaskurin lukema"}
    :water_quality 
-   {:name "Kirkasvesinäyte" 
+   {:name "Kirkasvesinäyte" :range [1 3]
     :input-type (keyword "numeric") :unit "1-3"
     :description "Kirkasveden laatu asteikolla 1-3 (1 on parhain)"}
    :ferrosulphate_level_percent 
-   {:name "Ferrosulfaatin määrä" 
+   {:name "Ferrosulfaatin määrä" :range [0 100]
     :input-type (keyword "numeric") :unit "prosenttiluku"
     :description "Ferrosulfaattimittarin prosenttilukema"}
    :ferrosulphate_addition_kg 
-   {:name "Ferrosulfaatin lisäys" 
+   {:name "Ferrosulfaatin lisäys" :range [1 1000]
     :input-type (keyword "numeric") :unit "kiloa"
     :description "Ferrosulfaatin määrän lisäys kiloina."}})
 
