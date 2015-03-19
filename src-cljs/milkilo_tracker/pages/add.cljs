@@ -60,12 +60,12 @@
     (if (and (validate-entry @new-entry)
              (.confirm js/window (str "Tallenna mittausarvo "
                                       ((@new-entry :entry) :value))))
-
       (POST (str js/context "/entry")
             {:params (@new-entry :entry)
              :handler (fn [resp]
-                        (.log js/console (str "Response status: "
-                                              (:status resp)))
+                        (.log js/console (str "Response: "
+                                              resp))
+                        (session/update-in! [:entries] conj resp)
                         (session/put! :saved? true))}))))
 
 (defn add-entry-page []
@@ -73,7 +73,6 @@
         new-entry (atom (assoc-in initial-entry [:entry :site_id] site-id))
         entry-types (session/get :entry-types)]
     (fn []
-      (log site-id)
       [:div
        [bind-fields [:div
                      [row "Päivämäärä"
