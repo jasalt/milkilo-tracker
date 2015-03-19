@@ -26,10 +26,12 @@
      [:p "Puhdistamo puuttuu (tai sen tietoja ladataan)"])
    
    (if-let [entries (session/get :entries)]
-     [:div
-      [:h4 "Merkinnät:"]
-      (for [entry entries]
-        ^{:key entry} [:p (str entry)])])
+     ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed. 
+     (let [last-entries (reverse entries)]
+       [:div
+      [:h4 "Edelliset merkinnät:"]
+      (for [entry last-entries]
+        ^{:key entry} [:p (str entry)])]))
 
    (let [before-at (first (str/split (get-cookie "email") "%40"))
          name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
