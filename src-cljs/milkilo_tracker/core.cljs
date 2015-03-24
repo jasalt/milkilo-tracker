@@ -6,6 +6,7 @@
    
    [milkilo-tracker.utils :refer [log]]
    [figwheel.client :as fw]
+   [weasel.repl :as ws-repl]
    
    [secretary.core :as secretary :refer-macros [defroute]]
    [ajax.core :refer [GET]]
@@ -60,12 +61,13 @@
 (defn init-data-handler [resp]
   "Receive initial user data from server and put it to session."
   ;; TODO Handle multiple user sites etc.
-  (.log js/console (str resp)) 
+  ;;(.log js/console (str resp)) 
   (let [site-data (first resp)]
     (session/put! :entries (site-data :entries))
     (session/put! :site (dissoc site-data :entries))))
 
 (defn init! []
+  "Initial application state"
   (.initializeTouchEvents js/React true)
   (js/console.log "(core/init!)")
   (enable-console-print!)
@@ -78,5 +80,8 @@
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar")))
 
+;; Development utilities
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
            :on-jsload (fn [] (init!))})
+
+(ws-repl/connect "ws://localhost:9001")

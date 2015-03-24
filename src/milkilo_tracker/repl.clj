@@ -1,7 +1,12 @@
 (ns milkilo-tracker.repl
   (:use milkilo-tracker.handler
         ring.server.standalone
-        [ring.middleware file-info file]))
+        [ring.middleware file-info file])
+  (:require
+   [cemerick.piggieback]
+   [weasel.repl.websocket]
+   )
+  )
 
 (defonce server (atom nil))
 
@@ -11,9 +16,9 @@
   ;; rather than having its own copy. When the root binding
   ;; changes, the server picks it up without having to restart.
   (-> #'app
-      ; Makes static assets in $PROJECT_DIR/resources/public/ available.
+                                        ; Makes static assets in $PROJECT_DIR/resources/public/ available.
       (wrap-file "resources")
-      ; Content-Type, Content-Length, and Last Modified headers for files in body
+                                        ; Content-Type, Content-Length, and Last Modified headers for files in body
       (wrap-file-info)))
 
 (defn start-server
@@ -28,6 +33,11 @@
                     :destroy destroy
                     :join? false}))
     (println (str "You can view the site at http://localhost:" port))))
+
+(defn start-cljs-repl []
+  (cemerick.piggieback/cljs-repl
+   :repl-env (weasel.repl.websocket/repl-env :ip "127.0.0.1"
+                                             :port 9001)))
 
 (defn stop-server []
   (.stop @server)

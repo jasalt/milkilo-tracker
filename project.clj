@@ -34,7 +34,9 @@
    [org.clojure/core.cache "0.6.4"]
 
    ;; Frontend libs
-   [org.clojure/clojurescript "0.0-2760"]
+   [org.clojure/clojurescript "0.0-3126"]
+   [com.cemerick/piggieback "0.1.5"]
+   [weasel "0.6.0"]
    [cljs-ajax "0.3.9"]
    [com.cemerick/friend "0.2.1"]
    [reagent-forms "0.4.3"]
@@ -42,14 +44,15 @@
    [com.andrewmcveigh/cljs-time "0.3.2"]
    ]
   :repl-options
-  {:init-ns milkilo-tracker.repl}
+  {:init-ns milkilo-tracker.repl
+   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
   :jvm-opts
   ["-server"]
   :plugins
   [[lein-ring "0.9.0"]
    [lein-environ "1.0.0"]
    [lein-ancient "0.6.2"]
-   [lein-cljsbuild "1.0.4"]
+   [lein-cljsbuild "1.0.5"]
    [lein-figwheel "0.2.2-SNAPSHOT"]
    [ragtime/ragtime.lein "0.3.6"]]
   :ring
@@ -95,7 +98,7 @@
       :externs ["react/externs/react.js"],
       :optimizations :none,
       :output-to "resources/public/js/app.js",
-      :source-map "resources/public/js/out.js.map",
+      :source-map true,
       :pretty-print true}}}}
   :uberjar-name
   "milkilo-tracker.jar"
