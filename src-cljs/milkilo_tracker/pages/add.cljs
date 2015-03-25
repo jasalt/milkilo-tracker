@@ -36,25 +36,24 @@
         date (entry-map :date)
         type (entry-map :type)
         entry-info (get-entry-info type)]
-    (if value
+    (if-not value
+      {:error "Mittausarvo puuttuu!"}
       (do
         (case (entry-info :input-type)
           :numeric
           (let [lower-limit (first (entry-info :range))
                 upper-limit (second (entry-info :range))]
             (if (or (< value lower-limit) (> value upper-limit))
-              (.alert js/window
-                      (str "Virheellinen numeroarvo. Anna lukema väliltä "
-                           lower-limit"-"upper-limit))
+              {:error (str "Virheellinen numeroarvo. Anna lukema väliltä "
+                           lower-limit"-"upper-limit)}
               true))
           :text
           (if (or (clojure.string/blank? value) (> (.-length value) 1000))
-            (.alert js/window
-                    "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000.")
+            {:error "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000."}
             true)
 
           nil))
-      (do (.alert js/window "Mittausarvo puuttuu!") nil))))
+      )))
 
 (t/deftest entry-input-validation
   (t/is (= 1 1) "One is one")
@@ -63,16 +62,18 @@
 
 (defn save-entry [new-entry]
   (fn []
-    (if (and (validate-entry @new-entry)
-             (.confirm js/window (str "Tallenna mittausarvo "
-                                      ((@new-entry :entry) :value))))
-      (POST (str js/context "/entry")
-            {:params (@new-entry :entry)
-             :handler (fn [resp]
-                        (.log js/console (str "Response: "
-                                              resp))
-                        (session/update-in! [:entries] conj resp)
-                        (session/put! :saved? true))}))))
+    (let [validation-result (validate-entry @new-entry)]
+      (if (and (not (validation-result :error))
+               (.confirm js/window (str "Tallenna mittausarvo "
+                                        ((@new-entry :entry) :value))))
+        (POST (str js/context "/entry")
+              {:params (@new-entry :entry)
+               :handler (fn [resp]
+                          (.log js/console (str "Response: "
+                                                resp))
+                          (session/update-in! [:entries] conj resp)
+                          (session/put! :saved? true))})
+        (.alert js/window (str "Virhe syötteessä: " (validation-result :error)))))))
 
 (defn add-entry-page []
   (let [site-id ((session/get :site) :id) ;; TODO Handle multiple sites
