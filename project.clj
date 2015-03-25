@@ -8,7 +8,6 @@
   :dependencies
   [
    ;; Backend libs
-   [figwheel "0.2.2-SNAPSHOT"]
    [ragtime "0.3.8"]
    [prone "0.8.0"]
    [log4j
@@ -35,8 +34,7 @@
 
    ;; Frontend libs
    [org.clojure/clojurescript "0.0-2850"]
-   [com.cemerick/piggieback "0.1.5"]
-   [weasel "0.6.0"]
+   [figwheel "0.2.5"]
    [cljs-ajax "0.3.9"]
    [secretary "1.2.3-SNAPSHOT"]
    [com.cemerick/friend "0.2.1"]
@@ -111,7 +109,7 @@
    :server-port 3449
    :css-dirs ["resources/public/css"]
    :open-file-command "file-opener"
-   :repl false
+   :repl true
    }
   :clean-targets ^{:protect false}
   ["resources/public/js/out/"
