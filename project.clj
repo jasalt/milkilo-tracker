@@ -123,4 +123,7 @@
    ;; :server-logfile "tmp/logs/figwheel-logfile.log"
 
    }
+  :clean-targets ^{:protect false}
+  ["resources/public/js/out/"
+   "resources/phantom/out/"]
   )
