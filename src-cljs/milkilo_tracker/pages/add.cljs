@@ -2,6 +2,7 @@
 ;; TODO flatten out unnecessary root level :entry key from data structure
 (ns milkilo-tracker.pages.add
   (:require
+   [cljs.test :as t]
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    [reagent-forms.core :refer [bind-fields]]
@@ -54,6 +55,11 @@
 
           nil))
       (do (.alert js/window "Mittausarvo puuttuu!") nil))))
+
+(t/deftest entry-input-validation
+  (t/is (= 1 1) "One is one")
+  (t/is (= 1 2) "One is not two")
+  )
 
 (defn save-entry [new-entry]
   (fn []

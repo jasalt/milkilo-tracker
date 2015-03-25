@@ -1,12 +1,12 @@
 ;; Entry point, setup routings
 (ns milkilo-tracker.core
   (:require
+   [cljs.test :as t]
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    
    [milkilo-tracker.utils :refer [log]]
    [figwheel.client :as fw]
-   [weasel.repl :as ws-repl]
    
    [secretary.core :as secretary :refer-macros [defroute]]
    [ajax.core :refer [GET]]
@@ -77,10 +77,14 @@
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil)
   (reagent/render-component [page] (.getElementById js/document "app"))
-  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar")))
+  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
+
+  ;; Run unit tests during development.
+  (t/run-tests 'milkilo-tracker.pages.add)
+  )
 
 ;; Development utilities
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
-           :on-jsload (fn [] (init!))})
+           :on-jsload (fn []
+                        (init!))})
 
-;; (ws-repl/connect "ws://localhost:9001")

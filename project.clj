@@ -33,7 +33,6 @@
    [org.clojure/core.cache "0.6.4"]
 
    ;; Frontend libs
-   [org.clojure/clojurescript "0.0-2850"]
    [figwheel "0.2.5"]
    [cljs-ajax "0.3.9"]
    [secretary "1.2.3-SNAPSHOT"]
@@ -52,7 +51,7 @@
    [lein-ancient "0.6.2"]
    [lein-cljsbuild "1.0.5"]
    [lein-figwheel "0.2.5"]
-   [com.cemerick/clojurescript.test "0.3.3"]
+   [com.cemerick/clojurescript.test "0.3.2"]
    [ragtime/ragtime.lein "0.3.6"]]
   :ring
   {:handler milkilo-tracker.handler/app,
