@@ -34,13 +34,13 @@
    [org.clojure/core.cache "0.6.4"]
 
    ;; Frontend libs
-   [org.clojure/clojurescript "0.0-3126"]
+   [org.clojure/clojurescript "0.0-2850"]
    [com.cemerick/piggieback "0.1.5"]
    [weasel "0.6.0"]
    [cljs-ajax "0.3.9"]
+   [secretary "1.2.3-SNAPSHOT"]
    [com.cemerick/friend "0.2.1"]
    [reagent-forms "0.4.3"]
-   [secretary "1.2.1"]
    [com.andrewmcveigh/cljs-time "0.3.2"]
    ]
   :repl-options
@@ -53,7 +53,8 @@
    [lein-environ "1.0.0"]
    [lein-ancient "0.6.2"]
    [lein-cljsbuild "1.0.5"]
-   [lein-figwheel "0.2.2-SNAPSHOT"]
+   [lein-figwheel "0.2.5"]
+   [com.cemerick/clojurescript.test "0.3.3"]
    [ragtime/ragtime.lein "0.3.6"]]
   :ring
   {:handler milkilo-tracker.handler/app,
@@ -105,23 +106,12 @@
   :min-lein-version "2.0.0"
   :figwheel
   {
+   :nrepl-port 7888
    :http-server-root "public" ;; this will be in resources/
-   :server-port 3449          ;; default
+   :server-port 3449
    :css-dirs ["resources/public/css"]
-
-   ;; Server Ring Handler (optional)
-   ;; if you want to embed a ring handler into the figwheel http-kit
-   ;; server
-   ;; :ring-handler milkilo-tracker.handler/app
-
    :open-file-command "file-opener"
-
-   ;; if you want to disable the REPL
    :repl false
-
-   ;; to configure a different figwheel logfile path
-   ;; :server-logfile "tmp/logs/figwheel-logfile.log"
-
    }
   :clean-targets ^{:protect false}
   ["resources/public/js/out/"
