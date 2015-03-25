@@ -27,16 +27,17 @@
       :value nil}}))
 
 (defn validate-entry [entry]
-  ;; Input validation
-  (log (str "validating " entry))
-
-  ;; {:entry {:date {:year 2015, :month 3, :day 13}, :type :comment, :value "3341"}}
+  "Input validation. Returns true if okay. Else returns map with :error
+   containing an error message."
+  ;;(log (str "validating " entry))
   (let [entry-map (entry :entry)
         value (entry-map :value)
+        site-id (entry-map :site_id)
         date (entry-map :date)
         type (entry-map :type)
         entry-info (get-entry-info type)]
-    (if-not value
+
+    (if-not (and value date type site-id)
       {:error "Mittausarvo puuttuu!"}
       (do
         (case (entry-info :input-type)
@@ -48,22 +49,17 @@
                            lower-limit"-"upper-limit)}
               true))
           :text
-          (if (or (clojure.string/blank? value) (> (.-length value) 1000))
+          (if (clojure.string/blank? value) ;; (> (.-length value) 1000)
             {:error "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000."}
             true)
-
           nil))
       )))
-
-(t/deftest entry-input-validation
-  (t/is (= 1 1) "One is one")
-  (t/is (= 1 2) "One is not two")
-  )
 
 (defn save-entry [new-entry]
   (fn []
     (let [validation-result (validate-entry @new-entry)]
-      (if (and (not (validation-result :error))
+      (if (and (not
+                (validation-result :error))
                (.confirm js/window (str "Tallenna mittausarvo "
                                         ((@new-entry :entry) :value))))
         (POST (str js/context "/entry")
@@ -120,3 +116,47 @@
        [cancel]
        [:p (str "testaus-tieto: " @new-entry)]
        ])))
+
+(t/deftest entry-input-validation
+  (t/is (not
+         (:error (validate-entry
+                  {:entry
+                   {:date
+                    {:year 2015, :month 3, :day 26},
+                    :site_id 3,
+                    :type :comment,
+                    :value "Legit value"}})
+                 )) "String value should be okay.")
+  (t/is (:error (validate-entry
+                 {:entry
+                  {:date
+                   {:year 2015, :month 3, :day 26},
+                   :site_id 3,
+                   :type :comment,
+                   :value "  "}})
+                ) "Text value cannot be just whitespace.")
+  (t/is (:error (validate-entry
+                 {:entry
+                  {:date
+                   {:year 2015, :month 3, :day 26},
+                   :site_id 3,
+                   :type :comment,
+                   :value ""}})
+                ) "Empty value is not allowed.")
+  (t/is (:error (validate-entry
+                 {:entry
+                  {:type :comment,
+                   :value "Legit value."}})
+                ) "Entry without site-id is not allowed.")
+  (t/is (:error (validate-entry
+                 {:entry
+                  {:site_id 3,
+                   :type :comment,
+                   :value ""}})
+                ) "Entry without a date is not allowed.")
+  (t/is (:error (validate-entry
+                 {:entry
+                  {:site_id 3,
+                   :value ""}})
+                ) "Entry without type is not allowed.")
+  )
