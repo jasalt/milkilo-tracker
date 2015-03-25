@@ -50,28 +50,32 @@ http://yogthos.net/posts/2014-08-14-Routing-With-Secretary.html
 *** DONE Check login from db
 *** DONE Show user sites on dashboard
 On initial fetch, return proper data.
-** TODO Entry CRUD
+** TODO Entry creation
 *** DONE Add some data for testing
-*** TODO Single entry page
-Could use some state switch. It's maybe bit ugly.
-Common components for both would be handy.
-{:editing boolean}
+*** DONE Single entry page
+*** Fix validation
+**** TODO Setup test that can be run on REPL
+** Error messages
 ** Alerts
 *** TODO Query
 *** TODO Schedule with cronj
 *** TODO Send mail with postal or mailgun api
 clojure-cookbook/05_network-io/5-05_sending-email.asciidoc
 ** Deployment
+* Bugs
+** Kirkasvesinäyte
+
 * B
 Add data viewing utilities etc.
+** [#A] Entry update/delete
 ** [#A] Charts
 Cool nvd3 stuff.
 Get some data first.
 ** [#B] UI Tweaks
-*** [#A] Desktop responsivity
+*** [#B] Localized datepicker
+*** [#C] Desktop responsivity
 Data entry is optimized for mobile.
 Responsive design.
-*** [#B] Localized datepicker
 ** [#B] Tests
 Not critical right now..
 ** [#B] Multi user management

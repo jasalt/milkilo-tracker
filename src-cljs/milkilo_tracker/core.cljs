@@ -72,7 +72,6 @@
   (js/console.log "(core/init!)")
   (enable-console-print!)
   (secretary/set-config! :prefix "#")
-  
   (GET "/entries" {:handler init-data-handler})
   
   (session/put! :current-page dashboard-page)
@@ -84,4 +83,4 @@
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
            :on-jsload (fn [] (init!))})
 
-(ws-repl/connect "ws://localhost:9001")
+;; (ws-repl/connect "ws://localhost:9001")
