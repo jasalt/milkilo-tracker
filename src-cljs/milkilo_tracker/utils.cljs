@@ -10,11 +10,11 @@
   (.get goog.net.cookies (name key))
   )
 
-(defn log [desc val]
-  ;;(js/console.log (pr-str x))
+(defn log
+  ([val desc]
   (js/console.log desc)
-  (js/console.log (pr-str val))
-  )
+  (js/console.log (pr-str val)))
+  ([val] (log val "Logging:")))
 
 (defn logout []
   (GET "/logout") ;; Response drops session cookie
