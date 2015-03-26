@@ -116,45 +116,50 @@
        ])))
 
 (t/deftest entry-input-validation
-  (t/is (not
-         (:error (validate-entry
-                  {:entry
-                   {:date
-                    {:year 2015, :month 3, :day 26},
-                    :site_id 3,
-                    :type :comment,
-                    :value "Legit value"}})
-                 )) "String value should be okay.")
-  (t/is (:error (validate-entry
-                 {:entry
-                  {:date
-                   {:year 2015, :month 3, :day 26},
-                   :site_id 3,
-                   :type :comment,
-                   :value "  "}})
-                ) "Text value cannot be just whitespace.")
-  (t/is (:error (validate-entry
-                 {:entry
-                  {:date
-                   {:year 2015, :month 3, :day 26},
-                   :site_id 3,
-                   :type :comment,
-                   :value ""}})
-                ) "Empty value is not allowed.")
-  (t/is (:error (validate-entry
-                 {:entry
-                  {:type :comment,
-                   :value "Legit value."}})
-                ) "Entry without site-id is not allowed.")
-  (t/is (:error (validate-entry
-                 {:entry
-                  {:site_id 3,
-                   :type :comment,
-                   :value ""}})
-                ) "Entry without a date is not allowed.")
-  (t/is (:error (validate-entry
-                 {:entry
-                  {:site_id 3,
-                   :value ""}})
-                ) "Entry without type is not allowed.")
+  (let [test-entry {:entry
+                    {:date
+                     {:year 2015, :month 3, :day 26},
+                     :site_id 3,
+                     :type :comment,
+                     :value "Legit value"}}]
+
+    (t/is (nil? (:error (validate-entry test-entry)))
+          "String value should be okay.")
+
+    (t/is (nil? (:error (validate-entry
+                         (assoc-in test-entry [:entry :value] "  Valid!"))))
+          "Beginning whitespace doesn't matter.")
+
+    (t/is (:error (validate-entry (assoc-in test-entry [:entry :value] "  "))
+                  "Text value cannot be just whitespace."))
+
+    (t/is (:error (validate-entry (assoc-in test-entry [:entry :value] "")))
+          "Empty value is not allowed.")
+
+    (t/is (:error (validate-entry
+                   (update-in test-entry [:entry] dissoc :site_id)))
+          "Entry without a site_id is not allowed.")
+
+    (t/is (:error (validate-entry
+                   (update-in test-entry [:entry] dissoc :date)))
+          "Entry without a date is not allowed.")
+
+    (t/is (:error (validate-entry
+                   (update-in test-entry [:entry] dissoc :type)))
+          "Entry without a type is not allowed.")
+    )
+
+  ;; Test each numeric entry types values
+  (let [entry-types (session/get :entry-types)]
+    ;; must not contain text
+    ;; (t/is (not
+    ;;        (:error (validate-entry
+    ;;                 {:entry
+    ;;                  {:date
+    ;;                   {:year 2015, :month 3, :day 26},
+    ;;                   :site_id 3,
+    ;;                   :type :comment,
+    ;;                   :value "Legit value"}})
+    ;;                )) "String value should be okay.")
+    )
   )
