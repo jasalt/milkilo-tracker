@@ -29,7 +29,7 @@
 (defn validate-entry [entry]
   "Input validation. Returns true if okay. Else returns map with :error
    containing an error message."
-  ;;(log "Validating" entry)
+  (log entry "Validating:")
   (let [entry-map (entry :entry)
         value (entry-map :value)
         site-id (entry-map :site_id)
@@ -44,10 +44,12 @@
           :numeric
           (let [lower-limit (first (entry-info :range))
                 upper-limit (second (entry-info :range))]
-            (if (or (< value lower-limit) (> value upper-limit))
-              {:error (str "Virheellinen numeroarvo. Anna lukema väliltä "
+            (if-not (cljs.reader/numeric? value)
+              {:error (str "Ei kirjaimia tähän kenttään, käytä toistaiseksi erillistä kommentti-merkintää mikäli tarvetta. Anna tähän pelkkiä numeroita väliltä "
                            lower-limit"-"upper-limit)}
-              true))
+              (if (or (< value lower-limit) (> value upper-limit))
+                {:error (str "Virheellinen numeroarvo. Anna lukema väliltä "
+                             lower-limit"-"upper-limit)} true)))
           :text
           (if (clojure.string/blank? value) ;; (> (.-length value) 1000)
             {:error "Virheellinen teksti. Kirjaimia saa olla väliltä 1-1000."}
@@ -162,13 +164,57 @@
                                 (when (= (v :input-type) :numeric)
                                   (assoc altered-map k (:range v))))
                               {} entry-types)]
-    (doall (map
-     (fn [entry-type]
-       (t/is (:error
-              (validate-entry
-               (update-in test-entry [:entry] assoc
-                          :type (key entry-type)
-                          :value -1)))
-             "Negative numbers are not allowed."))
-     numeric-types)))
-  )
+    (doall
+     (map
+      (fn [entry-type]
+        (t/is (:error
+               (validate-entry
+                (update-in test-entry [:entry] assoc
+                           :type (key entry-type)
+                           :value -1)))
+              "Negative numbers are not allowed."))
+      numeric-types))
+
+    (doall
+     (map
+      (fn [entry-type]
+        (t/is (:error
+               (validate-entry
+                (update-in test-entry [:entry] assoc
+                           :type (key entry-type)
+                           :value (+ 1 (second
+                                        (val entry-type))))))
+              "Over limit numbers are not allowed."))
+      numeric-types))
+
+    (doall
+     (map
+      (fn [entry-type]
+        (t/is (:error
+               (validate-entry
+                (update-in test-entry [:entry] assoc
+                           :type (key entry-type)
+                           :value (- (first
+                                      (val entry-type)) 1))))
+              "Under limit numbers are not allowed."))
+      numeric-types))
+
+    (doall
+     (map
+      (fn [entry-type]
+        (t/is (:error
+               (validate-entry
+                (update-in test-entry [:entry] assoc
+                           :type (key entry-type)
+                           :value "2 String is bad.")))
+              "Strings are not allowed to numeric entry values."))
+      numeric-types))
+
+    ;;TODO "123 asdf" is saved as string
+    ;; "asdf" is not saved
+
+    ))
+
+;; (let [bad-entry {:entry {:date {:year 2015, :month 3, :day 26}, :site_id 3, :type :silt_surplus_removal_l, :value "123 asdf"}}]
+;;   (validate-entry bad-entry)
+;;   )

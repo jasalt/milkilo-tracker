@@ -33,6 +33,7 @@
    [org.clojure/core.cache "0.6.4"]
 
    ;; Frontend libs
+   [org.clojure/clojurescript "0.0-2850"]
    [figwheel "0.2.5"]
    [cljs-ajax "0.3.9"]
    [secretary "1.2.3-SNAPSHOT"]
