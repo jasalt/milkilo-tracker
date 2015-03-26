@@ -151,17 +151,24 @@
 
 
   ;; TODO Numeric type must not contain text
-  
+
   ;; Test each numeric entry types values
-  (let [entry-types (session/get :entry-types)
+  (let [test-entry {:entry
+                    {:date
+                     {:year 2015, :month 3, :day 26},
+                     :site_id 3}}
+        entry-types (session/get :entry-types)
         numeric-types (reduce (fn [altered-map [k v]]
                                 (when (= (v :input-type) :numeric)
                                   (assoc altered-map k (:range v))))
                               {} entry-types)]
-    
-
-    (log numeric-types "Numeric types:")
-
-    ;; TODO test different values
-    )
+    (doall (map
+     (fn [entry-type]
+       (t/is (:error
+              (validate-entry
+               (update-in test-entry [:entry] assoc
+                          :type (key entry-type)
+                          :value -1)))
+             "Negative numbers are not allowed."))
+     numeric-types)))
   )
