@@ -29,7 +29,7 @@
 (defn validate-entry [entry]
   "Input validation. Returns true if okay. Else returns map with :error
    containing an error message."
-  ;;(log (str "validating " entry))
+  ;;(log "Validating" entry)
   (let [entry-map (entry :entry)
         value (entry-map :value)
         site-id (entry-map :site_id)
@@ -57,19 +57,17 @@
 
 (defn save-entry [new-entry]
   (fn []
-    (let [validation-result (validate-entry @new-entry)]
-      (if (and (not
-                (validation-result :error))
-               (.confirm js/window (str "Tallenna mittausarvo "
-                                        ((@new-entry :entry) :value))))
-        (POST (str js/context "/entry")
-              {:params (@new-entry :entry)
-               :handler (fn [resp]
-                          (.log js/console (str "Response: "
-                                                resp))
-                          (session/update-in! [:entries] conj resp)
-                          (session/put! :saved? true))})
-        (.alert js/window (str "Virhe syötteessä: " (validation-result :error)))))))
+    (if-let [validation-error (:error (validate-entry @new-entry))]
+      (.alert js/window (str "Virhe syötteessä: " validation-error))
+      (and (.confirm js/window (str "Tallenna mittausarvo "
+                                    ((@new-entry :entry) :value)))
+           (POST (str js/context "/entry")
+                 {:params (@new-entry :entry)
+                  :handler (fn [resp]
+                             (.log js/console (str "Response: "
+                                                   resp))
+                             (session/update-in! [:entries] conj resp)
+                             (session/put! :saved? true))})))))
 
 (defn add-entry-page []
   (let [site-id ((session/get :site) :id) ;; TODO Handle multiple sites
