@@ -149,17 +149,19 @@
           "Entry without a type is not allowed.")
     )
 
+
+  ;; TODO Numeric type must not contain text
+  
   ;; Test each numeric entry types values
-  (let [entry-types (session/get :entry-types)]
-    ;; must not contain text
-    ;; (t/is (not
-    ;;        (:error (validate-entry
-    ;;                 {:entry
-    ;;                  {:date
-    ;;                   {:year 2015, :month 3, :day 26},
-    ;;                   :site_id 3,
-    ;;                   :type :comment,
-    ;;                   :value "Legit value"}})
-    ;;                )) "String value should be okay.")
+  (let [entry-types (session/get :entry-types)
+        numeric-types (reduce (fn [altered-map [k v]]
+                                (when (= (v :input-type) :numeric)
+                                  (assoc altered-map k (:range v))))
+                              {} entry-types)]
+    
+
+    (log numeric-types "Numeric types:")
+
+    ;; TODO test different values
     )
   )
