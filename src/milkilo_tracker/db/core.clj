@@ -53,7 +53,7 @@
                               :month (t/month date)
                               :day (t/day date)}]
                 (assoc % :date date-map))
-             (sort-by :date without-empty-fields))]
+             (reverse (sort-by :date without-empty-fields)))]
     sorted-with-simple-date))
 
 (defn get-user-data [user-id]

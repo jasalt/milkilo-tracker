@@ -18,7 +18,7 @@
 
    (if-let [entries (session/get :entries)]
      ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
-     (let [last-entries (reverse entries)
+     (let [last-entries entries
            entry-types (session/get :entry-types)]
        [:div.panel.panel-default
         [:div.panel-heading
