@@ -28,18 +28,14 @@
         [:div.list-group
          (for [entry last-entries]
            ^{:key entry}
-           (let [entry-name (:name (entry-types (first (keys (dissoc entry :date :id)))))
-                 entry-value (first (vals (dissoc entry :date :id)))
-                 entry-date (:date entry)
-                 entry-id (:id entry)]
+           (let [title (:name (entry-types (entry :type)))
+                 date (:date entry)]
              [:a.list-group-item.clearfix
-              {:on-click #(secretary/dispatch! (str "#/edit-entry/" entry-id))}
-              [:h3.pull-right (str entry-value)]
-              [:span.badge.pull-left {:style {:font-size "2em"}} (str entry-name)]
+              {:on-click #(secretary/dispatch! (str "#/edit-entry/" (entry :id)))}
+              [:h3.pull-right (str (entry :value))]
+              [:span.badge.pull-left {:style {:font-size "2em"}} (str title)]
               [:br]
-              [:h3
-               (str (entry-date :day)"."(entry-date :month)"."(entry-date :year))]
-              ]))]]))
+              [:h3 (str (date :day)"."(date :month)"."(date :year))]]))]]))
 
    (if-let [site (session/get :site)]
      [:div
