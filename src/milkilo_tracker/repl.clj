@@ -2,10 +2,6 @@
   (:use milkilo-tracker.handler
         ring.server.standalone
         [ring.middleware file-info file])
-  (:require
-   [cemerick.piggieback]
-   [weasel.repl.websocket]
-   )
   )
 
 (defonce server (atom nil))
@@ -34,10 +30,7 @@
                     :join? false}))
     (println (str "You can view the site at http://localhost:" port))))
 
-(defn start-cljs-repl []
-  (cemerick.piggieback/cljs-repl
-   :repl-env (weasel.repl.websocket/repl-env :ip "127.0.0.1"
-                                             :port 9001)))
+
 
 (defn stop-server []
   (.stop @server)

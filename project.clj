@@ -31,19 +31,22 @@
    [environ "1.0.0"]
    [ring-server "0.4.0"]
    [org.clojure/core.cache "0.6.4"]
-
+   
    ;; Frontend libs
    [org.clojure/clojurescript "0.0-2850"]
    [figwheel "0.2.5"]
    [cljs-ajax "0.3.9"]
    [secretary "1.2.3-SNAPSHOT"]
    [com.cemerick/friend "0.2.1"]
+   
    [reagent-forms "0.4.3"]
    [com.andrewmcveigh/cljs-time "0.3.2"]
    ]
   :repl-options
-  {:init-ns milkilo-tracker.repl
-   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+  {
+   :init-ns milkilo-tracker.repl
+   ;;:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+   }
   :jvm-opts
   ["-server"]
   :plugins
