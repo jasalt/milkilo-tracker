@@ -2,7 +2,11 @@
   (:use korma.core
         [korma.db :only (defdb)]
         clojure.pprint)
-  (:require [milkilo-tracker.db.schema :as schema]))
+  (:require
+   [milkilo-tracker.db.schema :as schema]
+   [clj-time.core :as t]
+   [clj-time.coerce :as c]
+   ))
 
 ;; Create connection pool
 (defdb db schema/db-spec)
@@ -34,15 +38,22 @@
             :results))
 
 (defn get-entries [site-id]
-  ;; Return entries by id. Site-id and nil attributes are removed from query.
-  (let [query-result (select entries
-                             (where {:site_id site-id}))
-        without-site-id (map #(dissoc % :site_id) query-result)
-
-        cleaned (map (fn [entry] (into {} (filter
+  "Return entries for a site-id. Site-id and nil attributes are removed. Time is transformed from sql-style to simple date map."
+  (let [db-entries (select entries
+                           (where {:site_id site-id}))
+        without-site-id (map #(dissoc % :site_id) db-entries)
+        without-empty-fields (map (fn [entry]
+                                    (into {}
+                                          (filter
                                            (comp not nil? val) entry)))
-                     without-site-id)]
-    cleaned))
+                                  without-site-id)
+        with-simple-date
+        (map #(let [date (c/from-sql-date (:date %))
+                    date-map {:year (t/year date)
+                              :month (t/month date)
+                              :day (t/day date)}]
+                (assoc % :date date-map)) without-empty-fields)]
+    with-simple-date))
 
 (defn get-user-data [user-id]
   ;; Get data of all users administered sites with entries.
@@ -53,6 +64,7 @@
        (merge site {:entries (get-entries (site :id))}))
      cleaned-user-sites)))
 
+;; TODO to-sql-time here
 (defn insert-entry [entry]
   (insert entries
           (values entry)))
