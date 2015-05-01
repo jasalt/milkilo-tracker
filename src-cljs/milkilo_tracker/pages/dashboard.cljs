@@ -40,9 +40,11 @@
                  entry-id (:id entry)]
              [:a.list-group-item.clearfix
               {:on-click #(secretary/dispatch! (str "#/edit-entry/" entry-id))}
-              [:span.badge.pull-left {:style {:font-size "2em"}} (str entry-name)]
               [:h3.pull-right (str entry-value)]
-              [:h4 {:style {:clear "both"}} (str entry-date)]
+              [:span.badge.pull-left {:style {:font-size "2em"}} (str entry-name)]
+              [:br]
+              [:h3
+               (str (entry-date :day)"."(entry-date :month)"."(entry-date :year))]
               ]))]]))
 
    (if-let [site (session/get :site)]
