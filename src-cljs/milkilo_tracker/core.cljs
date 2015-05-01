@@ -37,9 +37,14 @@
   (session/put! :bread nil))
 
 (defroute "/edit-entry/:id" {:as params}
-  (log "Mennää")
+  (.log js/console "Params are")
   (log params)
-  (session/put! :current-page edit-entry-page)
+  (let [entries (session/get :entries)
+        entry (first (filter #(= (int (params :id)) (:id %)) entries))]
+    (session/put! :selected-entry entry)
+    (log entry))
+  
+  (session/put! :current-page add-entry-page)
   (session/put! :bread "Muokkaa merkintää"))
 
 (defroute "/add-entry" []

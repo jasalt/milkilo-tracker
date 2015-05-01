@@ -23,14 +23,8 @@
        [:div.panel.panel-default
         [:div.panel-heading
          [:h4 "Edelliset merkinnät:"]]
-        [:div.panel-body ;; TODO graphics
-         "Testaustarkoituksiin näytetään nämä kaikki"
-         ;;  [:div.chart-container
-         ;;   [:p "Diagram:"]
-         ;;   [:img.img-responsive
-         ;;    {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
-         ;;     :on-click #(secretary/dispatch! "#/history")}]]
-         ]
+        [:div.panel-body 
+         "Testaustarkoituksiin näytetään nämä kaikki"]
         [:div.list-group
          (for [entry last-entries]
            ^{:key entry}
