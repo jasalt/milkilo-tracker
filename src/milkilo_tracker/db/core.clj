@@ -49,14 +49,21 @@
                      (comp not nil? val) entry))))
        (sort-by :date)
        (reverse)
+       ;; DB date into a simple date map
        (map #(let [date (c/from-sql-date (:date %))
                    date-map {:year (t/year date)
                              :month (t/month date)
                              :day (t/day date)}]
                (assoc % :date date-map)))
-       )
-  )
-;;(get-entries 3)
+       ;; Transform (weird?) DB type-value into more human friendly form
+       (map (fn [db-entry]
+              (let [type-value-row (dissoc db-entry :id :date)
+                    type (first (keys type-value-row))
+                    value (first (vals type-value-row))]
+                (-> db-entry
+
+                    (assoc :value value :type type)
+                    (dissoc type)))))))
 
 (defn get-user-data [user-id]
   ;; Get data of all users administered sites with entries.
