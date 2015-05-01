@@ -32,10 +32,7 @@
   (let [user-id (:id (friend/current-authentication))]
     (db/get-user-data user-id)))
 
-(defn str->int [str]
-  "Convert string to number if possible, or just return the string."
-  (let [result (read-string str)]
-    (if (number? result) result str)))
+
 
 (defn save-entry [entry]
   (let [user-id (:id (friend/current-authentication))
@@ -53,14 +50,10 @@
           (pprint entry)
           entry
           )
-        (let [new-db-entry (assoc (select-keys entry [:site_id])
-                                  :date (entry :date) 
-                                  ;; TODO hack fix to convert strings numbers
-                                  (entry :type) (str->int (entry :value)))]
+        (do
           (println "Saving")
           (pprint entry)
-          (db/insert-entry new-db-entry)
-          new-db-entry
+          (db/insert-entry entry)
           )
         )
       (do

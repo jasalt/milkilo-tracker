@@ -15,16 +15,6 @@
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
 
-(def initial-entry
-  ;; Initialize new entry with current date
-  (let [now (local-now)]
-    {:entry
-     {:date {:year (year now),
-             :month (month now),
-             :day (day now)}
-      :site_id nil
-      :type nil
-      :value nil}}))
 
 (defn validate-entry [entry]
   "Input validation. Returns true if okay. Else returns map with :error
@@ -57,23 +47,38 @@
           nil))
       )))
 
-(defn save-entry [new-entry]
+(defn save-entry [this-entry]
   (fn []
-    (if-let [validation-error (:error (validate-entry @new-entry))]
+    (if-let [validation-error (:error (validate-entry @this-entry))]
       (.alert js/window (str "Virhe syötteessä: " validation-error))
       (and (.confirm js/window (str "Tallenna mittausarvo "
-                                    ((@new-entry :entry) :value)))
+                                    ((@this-entry :entry) :value)))
            (POST (str js/context "/entry")
-                 {:params (@new-entry :entry)
+                 {:params (@this-entry :entry)
                   :handler (fn [resp]
                              (.log js/console (str "Response: "
                                                    resp))
                              (session/update-in! [:entries] conj resp)
                              (session/put! :saved? true))})))))
 
+(def initial-entry
+  ;; Initialize new entry with current date
+  (let [now (local-now)]
+    {:entry
+     {:date {:year (year now),
+             :month (month now),
+             :day (day now)}
+      :site_id nil
+      :type nil
+      :value nil}}))
+
 (defn add-entry-page []
   (let [site-id ((session/get :site) :id) ;; TODO Handle multiple sites
-        new-entry (atom (assoc-in initial-entry [:entry :site_id] site-id))
+        this-entry (if-let [selected-entry (session/get :selected-entry)]
+                     (atom {:entry selected-entry})
+                     (atom (assoc-in initial-entry [:entry :site_id] site-id))
+                     )
+
         entry-types (session/get :entry-types)]
     (fn []
       [:div
@@ -83,7 +88,7 @@
                      entry-type-selector
                      entry-field
                      ]
-        new-entry
+        this-entry
         ;; Any change made will falsify :saved?
         (fn [_ _ _]
           (session/put! :saved? false)
@@ -96,7 +101,7 @@
             )
           )]
 
-       (let [current-entry-info (get-entry-info ((@new-entry :entry) :type))
+       (let [current-entry-info (get-entry-info ((@this-entry :entry) :type))
              description (:description current-entry-info)
              unit (:unit current-entry-info)]
          [:span.span-lg "Selite"]
@@ -111,10 +116,10 @@
          [:h1 "Tallennettu!"]
          [:button.btn.btn-success.btn-lg.btn-block.top-margin
           {:type "submit"
-           :onClick (save-entry new-entry)}
+           :onClick (save-entry this-entry)}
           "Tallenna"])
        [cancel]
-       [:p (str "testaus-tieto: " @new-entry)]
+       [:p (str "testaus-tieto: " @this-entry)]
        ])))
 
 (t/deftest entry-input-validation
