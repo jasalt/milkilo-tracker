@@ -8,6 +8,7 @@
   :dependencies
   [
    ;; Backend libs
+   [debugger "0.1.7"]
    [ragtime "0.3.8"]
    [prone "0.8.0"]
    [log4j
