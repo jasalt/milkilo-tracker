@@ -31,16 +31,19 @@
         ;;    {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
         ;;     :on-click #(secretary/dispatch! "#/history")}]]
         ]
-        [:ul.list-group
+        [:div.list-group
          (for [entry last-entries]
            ^{:key entry}
            (let [entry-name (:name (entry-types (first (keys (dissoc entry :date :id)))))
                  entry-value (first (vals (dissoc entry :date :id)))
                  entry-date (:date entry)]
-             [:li.list-group-item
-              [:h4 (str entry-name ":")]
-              [:h4 (str entry-value)]
-              [:h6 (str entry-date)]]))]]))
+             [:a.list-group-item.clearfix
+              [:span.badge.value-badge (str entry-value)]
+              [:h3 (str entry-name)]
+              [:h4 (str entry-date)]
+              
+              ]
+             ))]]))
 
    (if-let [site (session/get :site)]
      [:div
