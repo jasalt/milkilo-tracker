@@ -4,10 +4,10 @@
    [cljs.test :as t]
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
-   
+
    [milkilo-tracker.utils :refer [log]]
    [figwheel.client :as fw]
-   
+
    [secretary.core :as secretary :refer-macros [defroute]]
    [ajax.core :refer [GET]]
    [goog.events :as events]
@@ -30,7 +30,7 @@
 ;;      (fn [event]
 ;;        (secretary/dispatch! (.-token event))))
 ;;     (.setEnabled true)))
- 
+
 
 (defroute "/" []
   (session/put! :current-page dashboard-page)
@@ -61,7 +61,7 @@
 (defn init-data-handler [resp]
   "Receive initial user data from server and put it to session."
   ;; TODO Handle multiple user sites etc.
-  ;;(.log js/console (str resp)) 
+  ;;(.log js/console (str resp))
   (let [site-data (first resp)]
     (session/put! :entries (site-data :entries))
     (session/put! :site (dissoc site-data :entries))))
@@ -73,18 +73,18 @@
   (enable-console-print!)
   (secretary/set-config! :prefix "#")
   (GET "/entries" {:handler init-data-handler})
-  
+
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil)
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
 
   ;; Run unit tests during development.
-  (t/run-tests 'milkilo-tracker.pages.add)
+  ;; TODO if dev flag set?
+  ;; (t/run-tests 'milkilo-tracker.pages.add)
   )
 
 ;; Development utilities
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
            :on-jsload (fn []
                         (init!))})
-
