@@ -36,7 +36,9 @@
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil))
 
-(defroute "/entry/:id" {:as params}
+(defroute "/edit-entry/:id" {:as params}
+  (log "Mennää")
+  (log params)
   (session/put! :current-page edit-entry-page)
   (session/put! :bread "Muokkaa merkintää"))
 

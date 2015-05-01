@@ -15,7 +15,7 @@
     {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
 
    [:br]
-   
+
    (if-let [entries (sort-by :date (session/get :entries))]
      ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
      (let [last-entries (reverse entries)
@@ -25,31 +25,32 @@
          [:h4 "Edelliset merkinnät:"]]
         [:div.panel-body ;; TODO graphics
          "Testaustarkoituksiin näytetään nämä kaikki"
-        ;;  [:div.chart-container
-        ;;   [:p "Diagram:"]
-        ;;   [:img.img-responsive
-        ;;    {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
-        ;;     :on-click #(secretary/dispatch! "#/history")}]]
-        ]
+         ;;  [:div.chart-container
+         ;;   [:p "Diagram:"]
+         ;;   [:img.img-responsive
+         ;;    {:src "http://placekitten.com.s3.amazonaws.com/homepage-samples/200/138.jpg"
+         ;;     :on-click #(secretary/dispatch! "#/history")}]]
+         ]
         [:div.list-group
          (for [entry last-entries]
            ^{:key entry}
            (let [entry-name (:name (entry-types (first (keys (dissoc entry :date :id)))))
                  entry-value (first (vals (dissoc entry :date :id)))
-                 entry-date (:date entry)]
+                 entry-date (:date entry)
+                 entry-id (:id entry)]
              [:a.list-group-item.clearfix
-              {:on-click #(secretary/dispatch! "#/add-entry")}
+              {:on-click #(secretary/dispatch! (str "#/edit-entry/" entry-id))}
               [:span.badge.pull-left {:style {:font-size "2em"}} (str entry-name)]
               [:h3.pull-right (str entry-value)]
               [:h4 {:style {:clear "both"}} (str entry-date)]
               ]))]]))
-   
+
    (if-let [site (session/get :site)]
      [:div
       [:h4 "Puhdistamo (testiarvo)"]
       [:p (str site)]]
      [:p "Puhdistamo puuttuu (tai sen tietoja ladataan)"])
-   
+
    (let [before-at (first (str/split (get-cookie "email") "%40"))
          name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
      [:a.text-center {:on-click #(let [message "Oletko varma että haluat kirjautua ulos?"
