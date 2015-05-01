@@ -54,10 +54,7 @@
           entry
           )
         (let [new-db-entry (assoc (select-keys entry [:site_id])
-                                  :date (tc/to-sql-time
-                                         (t/local-date ((entry :date) :year)
-                                                       ((entry :date) :month)
-                                                       ((entry :date) :day)))
+                                  :date (entry :date) 
                                   ;; TODO hack fix to convert strings numbers
                                   (entry :type) (str->int (entry :value)))]
           (println "Saving")

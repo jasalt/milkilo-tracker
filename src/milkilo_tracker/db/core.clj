@@ -66,9 +66,13 @@
 
 ;; TODO to-sql-time here
 (defn insert-entry [entry]
-  (insert entries
-          (values entry)))
+  (let [entry-with-sql-time
+        (assoc entry :date (c/to-sql-time
+                            (t/date-time ((entry :date) :year)
+                                         ((entry :date) :month)
+                                         ((entry :date) :day))))]
+    (insert entries
+            (values entry-with-sql-time))))
 
 (defn update-entry [entry]
-  nil
-  )
+  nil)
