@@ -38,13 +38,12 @@
                  entry-value (first (vals (dissoc entry :date :id)))
                  entry-date (:date entry)]
              [:a.list-group-item.clearfix
-              [:span.badge.value-badge (str entry-value)]
-              [:h3 (str entry-name)]
-              [:h4 (str entry-date)]
-              
-              ]
-             ))]]))
-
+              {:on-click #(secretary/dispatch! "#/add-entry")}
+              [:span.badge.pull-left {:style {:font-size "2em"}} (str entry-name)]
+              [:h3.pull-right (str entry-value)]
+              [:h4 {:style {:clear "both"}} (str entry-date)]
+              ]))]]))
+   
    (if-let [site (session/get :site)]
      [:div
       [:h4 "Puhdistamo (testiarvo)"]

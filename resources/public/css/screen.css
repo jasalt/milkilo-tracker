@@ -59,7 +59,3 @@ select {
     white-space: nowrap;
     /* width: 50%; */
 }
-
-.value-badge {
-    font-size: 2em;
-}
