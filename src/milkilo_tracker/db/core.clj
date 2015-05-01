@@ -56,3 +56,7 @@
 (defn insert-entry [entry]
   (insert entries
           (values entry)))
+
+(defn update-entry [entry]
+  nil
+  )
