@@ -37,24 +37,26 @@
   (exec-raw [(str "SELECT * FROM sites WHERE admins @> ARRAY["user-id"]")]
             :results))
 
+
 (defn get-entries [site-id]
   "Return entries for a site-id. Site-id and nil attributes are removed. Time is transformed from sql-style to simple date map. Sorted by date."
-  (let [db-entries (select entries
-                           (where {:site_id site-id}))
-        without-site-id (map #(dissoc % :site_id) db-entries)
-        without-empty-fields (map (fn [entry]
-                                    (into {}
-                                          (filter
-                                           (comp not nil? val) entry)))
-                                  without-site-id)
-        sorted-with-simple-date
-        (map #(let [date (c/from-sql-date (:date %))
-                    date-map {:year (t/year date)
-                              :month (t/month date)
-                              :day (t/day date)}]
-                (assoc % :date date-map))
-             (reverse (sort-by :date without-empty-fields)))]
-    sorted-with-simple-date))
+  (->> (select entries
+               (where {:site_id site-id}))
+       (map #(dissoc % :site_id)) ;; Remove site ID
+       (map (fn [entry] ;; Strip empty fields
+              (into {}
+                    (filter
+                     (comp not nil? val) entry))))
+       (sort-by :date)
+       (reverse)
+       (map #(let [date (c/from-sql-date (:date %))
+                   date-map {:year (t/year date)
+                             :month (t/month date)
+                             :day (t/day date)}]
+               (assoc % :date date-map)))
+       )
+  )
+;;(get-entries 3)
 
 (defn get-user-data [user-id]
   ;; Get data of all users administered sites with entries.
