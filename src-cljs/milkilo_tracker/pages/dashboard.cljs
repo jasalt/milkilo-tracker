@@ -16,7 +16,7 @@
 
    [:br]
 
-   (if-let [entries (sort-by :date (session/get :entries))]
+   (if-let [entries (session/get :entries)]
      ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
      (let [last-entries (reverse entries)
            entry-types (session/get :entry-types)]

@@ -38,7 +38,7 @@
             :results))
 
 (defn get-entries [site-id]
-  "Return entries for a site-id. Site-id and nil attributes are removed. Time is transformed from sql-style to simple date map."
+  "Return entries for a site-id. Site-id and nil attributes are removed. Time is transformed from sql-style to simple date map. Sorted by date."
   (let [db-entries (select entries
                            (where {:site_id site-id}))
         without-site-id (map #(dissoc % :site_id) db-entries)
@@ -47,13 +47,14 @@
                                           (filter
                                            (comp not nil? val) entry)))
                                   without-site-id)
-        with-simple-date
+        sorted-with-simple-date
         (map #(let [date (c/from-sql-date (:date %))
                     date-map {:year (t/year date)
                               :month (t/month date)
                               :day (t/day date)}]
-                (assoc % :date date-map)) without-empty-fields)]
-    with-simple-date))
+                (assoc % :date date-map))
+             (sort-by :date without-empty-fields))]
+    sorted-with-simple-date))
 
 (defn get-user-data [user-id]
   ;; Get data of all users administered sites with entries.
@@ -64,7 +65,6 @@
        (merge site {:entries (get-entries (site :id))}))
      cleaned-user-sites)))
 
-;; TODO to-sql-time here
 (defn insert-entry [entry]
   (let [entry-with-sql-time
         (assoc entry :date (c/to-sql-time
