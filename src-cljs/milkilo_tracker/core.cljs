@@ -33,6 +33,7 @@
 
 
 (defroute "/" []
+  (session/put! :selected-entry nil)
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil))
 

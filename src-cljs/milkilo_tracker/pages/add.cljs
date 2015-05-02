@@ -53,13 +53,22 @@
       (.alert js/window (str "Virhe syötteessä: " validation-error))
       (and (.confirm js/window (str "Tallenna mittausarvo "
                                     ((@this-entry :entry) :value)))
-           (POST (str js/context "/entry")
-                 {:params (@this-entry :entry)
-                  :handler (fn [resp]
-                             (.log js/console (str "Response: "
-                                                   resp))
-                             (session/update-in! [:entries] conj resp)
-                             (session/put! :saved? true))})))))
+           (POST
+            (str js/context "/entry")
+            {:params (@this-entry :entry)
+             :handler
+             (fn [resp]
+               (.log js/console (str "Response: "
+                                     resp))
+               ;; Remove old entry from view
+               (if-let [old-entry (session/get :selected-entry)]
+                 (session/update-in!
+                  [:entries]
+                  (fn [all-entries old-entry]
+                    (remove #(= old-entry %) all-entries)) old-entry))
+               ;; Add new entry returned from backend
+               (session/update-in! [:entries] conj resp)
+               (session/put! :saved? true))})))))
 
 (def initial-entry
   ;; Initialize new entry with current date
@@ -75,7 +84,8 @@
 (defn add-entry-page []
   (let [site-id ((session/get :site) :id) ;; TODO Handle multiple sites
         this-entry (if-let [selected-entry (session/get :selected-entry)]
-                     (atom {:entry selected-entry})
+                     ;; Add siteid
+                     (atom {:entry (assoc selected-entry :site_id site-id)})
                      (atom (assoc-in initial-entry [:entry :site_id] site-id))
                      )
 
