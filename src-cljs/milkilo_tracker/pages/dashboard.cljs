@@ -26,16 +26,17 @@
         [:div.panel-body
          "Tarkastele ja poista edellisiä merkintöjä"]
         [:div.list-group
-         (for [entry last-entries]
-           ^{:key entry}
-           (let [title (:name (entry-types (entry :type)))
-                 date (:date entry)]
-             [:div.list-group-item
-              [:div.clearfix {:style {:clear "both"}}
-              [:span.badge.pull-left {:style {:font-size "1.3em"}} (str title " ")]
-               [:button.btn.btn-danger.pull-right
-                {:onClick (delete-entry (assoc entry :site_id ((session/get :site) :id)))} "X"]]
-              [:p (str (date :day)"."(date :month)"."(date :year)) " - "[:strong (str (entry :value))]]]))]]))
+         (doall
+          (for [entry last-entries]
+            ^{:key entry}
+            (let [title (:name (entry-types (entry :type)))
+                  date (:date entry)]
+              [:div.list-group-item
+               [:div.clearfix {:style {:clear "both"}}
+                [:span.badge.pull-left {:style {:font-size "1.3em"}} (str title " ")]
+                [:button.btn.btn-danger.pull-right
+                 {:onClick (delete-entry (assoc entry :site_id ((session/get :site) :id)))} "X"]]
+               [:p (str (date :day)"."(date :month)"."(date :year)) " - "[:strong (str (entry :value))]]])))]]))
 
    (if-let [site (session/get :site)]
      [:div
