@@ -94,9 +94,12 @@
                             ((entry :date) :day))))))
 
 (defn insert-entry [entry]
-  (insert entries (values (to-sql-form entry)))
   ;; TODO convert actual db response converted into app-readable format
-  entry
+  (let [db-entry (insert entries (values (to-sql-form entry)))]
+    ;;TODO currently hackfixed
+    (-> entry
+         (dissoc :site_id)
+         (assoc :id (db-entry :id))))
   )
 
 (defn update-entry [entry]
@@ -105,8 +108,8 @@
           (where {:id (entry :id)}))
   entry
   )
+
 (defn delete-entry [entry]
   (delete entries
           (where {:id (entry :id)}))
-  entry
-  )
+  entry)
