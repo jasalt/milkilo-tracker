@@ -22,6 +22,7 @@
 
 (defroute dashboard-path "/" []
   (session/put! :selected-entry nil)
+  (log "going to dash")
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil))
 
