@@ -10,13 +10,13 @@
   [:ol.breadcrumb
    [:li.active
     ;; TODO deactivate link at #/
-    [:a {:on-click #(dispatch! "#/")} "Dashboard"]]
+    [:a {:href "#/"} "Dashboard"]]
    (if-let [bread (session/get :bread)]
      [:li.active bread])])
 
 (defn cancel []
-  [:button.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
-   {:on-click #(dispatch! "#/")} "Takaisin"]
+  [:a.btn.btn-lg.btn-cancel.btn-danger.btn-block.top-margin
+   {:href "#/"} "Takaisin"]
   )
 
 (defn row [label & body]

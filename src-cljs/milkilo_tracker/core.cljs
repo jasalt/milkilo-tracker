@@ -6,13 +6,12 @@
    [reagent.core :as reagent :refer [atom]]
 
    [milkilo-tracker.utils :refer [log]]
+   [milkilo-tracker.history :as history]
    [figwheel.client :as fw]
 
    [secretary.core :as secretary :refer-macros [defroute]]
    [ajax.core :refer [GET]]
-   [goog.events :as events]
-   [goog.history.EventType :as EventType]
-
+   
    [milkilo-tracker.pages.dashboard  :refer [dashboard-page]]
    [milkilo-tracker.pages.add        :refer [add-entry-page]]
    [milkilo-tracker.pages.edit       :refer [edit-entry-page]]
@@ -21,23 +20,12 @@
    [milkilo-tracker.pages.components :refer [breadcrumbs]]
    ))
 
-;; TODO fix
-;; http://squirrel.pl/blog/tag/clojurescript/
-;; (defn hook-browser-navigation! []
-;;   (doto (History.)
-;;     (events/listen
-;;      EventType/NAVIGATE
-;;      (fn [event]
-;;        (secretary/dispatch! (.-token event))))
-;;     (.setEnabled true)))
-
-
-(defroute "/" []
+(defroute dashboard-path "/" []
   (session/put! :selected-entry nil)
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil))
 
-(defroute "/edit-entry/:id" {:as params}
+(defroute edit-entry-path "/edit-entry/:id" {:as params}
   (.log js/console "Params are")
   (log params)
   (let [entries (session/get :entries)
@@ -48,15 +36,15 @@
   (session/put! :current-page add-entry-page)
   (session/put! :bread "Muokkaa merkintää"))
 
-(defroute "/add-entry" []
+(defroute add-entry-path "/add-entry" []
   (session/put! :current-page add-entry-page)
   (session/put! :bread "Lisää merkintä"))
 
-(defroute "/history" []
+(defroute history-path "/history" []
   (session/put! :current-page history-page)
   (session/put! :bread "Historia"))
 
-(defroute "/about" []
+(defroute about-path "/about" []
   (session/put! :current-page about-page)
   (session/put! :bread "Tietoja sovelluksesta"))
 
@@ -79,7 +67,7 @@
   (.initializeTouchEvents js/React true)
   (js/console.log "(core/init!)")
   (enable-console-print!)
-  (secretary/set-config! :prefix "#")
+  
   (GET "/entries" {:handler init-data-handler})
 
   (session/put! :current-page dashboard-page)
@@ -87,6 +75,10 @@
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
 
+  (secretary/set-config! :prefix "#")
+
+  (history/hook-browser-navigation!)
+  
   ;; Run unit tests during development.
   ;; TODO if dev flag set?
   ;; (t/run-tests 'milkilo-tracker.pages.add)

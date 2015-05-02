@@ -11,11 +11,9 @@
 (defn dashboard-page []
   [:div
    [:br]
-   [:button.btn.btn-lg.btn-primary.btn-block
-    {:on-click #(secretary/dispatch! "#/add-entry")} "Lisää uusi merkintä"]
-
+   [:a.btn.btn-lg.btn-primary.btn-block
+    {:href "#/add-entry"} "Lisää uusi merkintä"]
    [:br]
-
    (if-let [entries (session/get :entries)]
      ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
      (let [last-entries entries

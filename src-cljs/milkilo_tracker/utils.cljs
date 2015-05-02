@@ -41,4 +41,4 @@
            [:entries]
            (fn [all-entries resp]
              (remove #(= (dissoc resp :site_id) %) all-entries)) resp)
-          (dispatch! "#/"))}))))
+          (dispatch! "/"))}))))
