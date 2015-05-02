@@ -42,20 +42,17 @@
 
     ;; Check users access for site
     (if (some #(= (entry :site_id ) %) user-sites)
-      
+
       ;; TODO If it already has ID, just update.
       (if (entry :id)
         (do
-          (println "Updating TODO")
+          (println "Updating:")
           (pprint entry)
-          entry
-          )
+          (db/update-entry entry))
         (do
-          (println "Saving")
+          (println "Inserting:")
           (pprint entry)
-          (db/insert-entry entry)
-          )
-        )
+          (db/insert-entry entry)))
       (do
         (println "Unauthorized")
         {:status 500}))))

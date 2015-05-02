@@ -37,9 +37,9 @@
   (exec-raw [(str "SELECT * FROM sites WHERE admins @> ARRAY["user-id"]")]
             :results))
 
-
 (defn get-entries [site-id]
   "Return entries for a site-id. Site-id and nil attributes are removed. Time is transformed from sql-style to simple date map. Sorted by date."
+  ;; TODO separate function from-sql-form
   (->> (select entries
                (where {:site_id site-id}))
        (map #(dissoc % :site_id)) ;; Remove site ID
@@ -61,7 +61,6 @@
                     type (first (keys type-value-row))
                     value (first (vals type-value-row))]
                 (-> db-entry
-
                     (assoc :value value :type type)
                     (dissoc type)))))))
 
@@ -74,14 +73,35 @@
        (merge site {:entries (get-entries (site :id))}))
      cleaned-user-sites)))
 
+(defn str->int [str]
+  "Convert string to number if possible, or just return the string."
+  (let [result (read-string str)]
+    (if (number? result) result str)))
+
+
+(defn to-sql-form [entry]
+  (-> (assoc
+       (select-keys entry [:site_id])
+       ;; Convert type value keys into DB row value
+       ;; TODO hack fix to convert strings numbers
+       (entry :type) (str->int (:value entry)))
+
+      ;; Convert date map to sql-time
+      (assoc  :date
+              (c/to-sql-time
+               (t/date-time ((entry :date) :year)
+                            ((entry :date) :month)
+                            ((entry :date) :day))))))
+
 (defn insert-entry [entry]
-  (let [entry-with-sql-time
-        (assoc entry :date (c/to-sql-time
-                            (t/date-time ((entry :date) :year)
-                                         ((entry :date) :month)
-                                         ((entry :date) :day))))]
-    (insert entries
-            (values entry-with-sql-time))))
+  (insert entries (values (to-sql-form entry)))
+  ;; TODO convert actual db response converted into app-readable format
+  entry
+  )
 
 (defn update-entry [entry]
-  nil)
+  (update entries
+          (set-fields (to-sql-form entry))
+          (where {:id (entry :id)}))
+  entry
+  )
