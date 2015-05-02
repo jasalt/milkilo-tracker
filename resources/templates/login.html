@@ -1,8 +1,53 @@
-<h2>Milkilo-tracker - Kirjaudu sisään</h2>
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Milkilo-tracker</title>
+    <!-- Normal Bootstrap mobile view -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <!-- Disable zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  </head>
+  <body>
+    <div class="container">
+      <div >
+      <h2 class="text-center">Milkilo Tracker</h2>
+      <img class="col-xs-8 col-xs-offset-2" src="images/milkilo.jpg" alt=""
+           style="margin-bottom: 10px;"/> </div>
+      <div class="row">
+        <div class="col-xs-8 col-xs-offset-2" id="app">
+          <form action="/login" method="POST">
+            <!-- Login library favours using username post field. -->
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon1">@</span>
+              <input type="text" class="form-control"
+                     placeholder="Sähköpostiosoite"
+                     aria-describedby="basic-addon1"
+                     name="username">
+              <span class="input-group-addon" id="basic-addon2">***</span>
+              <input type="text" class="form-control"
+                     placeholder="Salasana"
+                     aria-describedby="basic-addon1"
+                     name="password">
 
-<form action="/login" method="POST">
-<!-- Login library favours using username post field. -->
-Sähköpostiosoite: <input type="text" name="username" value="" /><br />
-Salasana: <input type="password" name="password" value="" /><br />
-<input type="submit" name="submit" value="submit" /><br />
-</form>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+              <div class="col-xs-6 col-xs-offset-3">
+                <input class="btn btn-block btn-default" type="submit" name="submit" value="Kirjaudu Sisään" />
+              </div>
+            </div>
+
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- scripts and styles -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
