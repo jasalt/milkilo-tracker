@@ -105,3 +105,8 @@
           (where {:id (entry :id)}))
   entry
   )
+(defn delete-entry [entry]
+  (delete entries
+          (where {:id (entry :id)}))
+  entry
+  )

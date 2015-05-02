@@ -32,32 +32,47 @@
   (let [user-id (:id (friend/current-authentication))]
     (db/get-user-data user-id)))
 
-
-
-(defn save-entry [entry]
+(defn user-has-access [entry]
   (let [user-id (:id (friend/current-authentication))
         user-sites (->> (db/get-administered-sites user-id)
                         (map #(first (vals (select-keys % [:id]))))
                         vec)]
-
-    ;; Check users access for site
     (if (some #(= (entry :site_id ) %) user-sites)
+      true
+      nil
+      )
+    )
+  )
 
-      ;; TODO If it already has ID, just update.
-      (if (entry :id)
-        (do
-          (println "Updating:")
-          (pprint entry)
-          (db/update-entry entry))
-        (do
-          (println "Inserting:")
-          (pprint entry)
-          (db/insert-entry entry)))
+(defn save-entry [entry]
+  "Save entry or update existing one with id if user has access."
+  (if (user-has-access entry)
+    (if (entry :id)
       (do
-        (println "Unauthorized")
-        {:status 500}))))
+        (println "Updating:")
+        (pprint entry)
+        (db/update-entry entry))
+      (do
+        (println "Inserting:")
+        (pprint entry)
+        (db/insert-entry entry)))
+    (do
+      (println "Unauthorized")
+      {:status 500})))
+
+(defn delete-entry [entry]
+  (if (user-has-access entry)
+    (do
+      (println "Deleting:")
+      (pprint entry)
+      (db/delete-entry entry))
+    (do
+      (println "Unauthorized")
+      {:status 500})))
 
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/entries" [] (edn (get-entries)))
-  (POST "/entry" {:keys [body-params]} (edn (save-entry body-params))))
+  (POST "/entry" {:keys [body-params]} (edn (save-entry body-params)))
+  (DELETE "/entry" {:keys [body-params]} (edn (delete-entry body-params)))
+  )
