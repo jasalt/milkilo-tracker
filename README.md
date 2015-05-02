@@ -1,5 +1,3 @@
-MIT Licensed
-
 # Overview
 App for logging and enforcing recurrent measurements of a sewage refinery system.
 
@@ -8,6 +6,21 @@ App for logging and enforcing recurrent measurements of a sewage refinery system
 - PostgreSQL database
 
 [1]: http://www.luminusweb.net/
+
+# TODO
+
+## Doing
+- [X] Schema
+- [X] User authentication
+- [X] CRUD for entries
+- [ ] Graphs with NVD3 (?)
+- [ ] Send mail notifications to user
+
+## Maybe later
+- [ ] User registration
+- [ ] Multiple sites for user, management UI ...
+- [ ] Responsive for desktop (currently just mobile)
+- [ ] Deploying properly
 
 # Development notes
 
@@ -39,17 +52,22 @@ Run migrations to add some tables:
 
 [3]: http://www.postgresql.org/docs/8.1/static/user-manag.html
 
-## Running
+## Development server
+From REPL run `(start-server)` from milkilo-tracker.repl namespace.
 
-To start a web server for the application, port 3000, run:
+For client run figwheel server for reloading changes:
+
+    rlwrap lein figwheel dev
+
+Connect cider to nrepl server running at localhost:7888 and from cider REPL run `(use 'figwheel-sidecar.repl-api)(cljs-repl)` to connect browser REPL.
+
+# Deploying / Running
+Compile cljs into javascript:
+
+    lein cljsbuild once
+
+And to start a web server on port 3000:
 
     lein ring server
 
-Or from REPL at milkilo-tracker.repl namespace run:
-    (start-server)
-
-Run figwheel server for reloading changes:
-
-    lein figwheel app
-
-TODO Write code...
+TODO do properly
