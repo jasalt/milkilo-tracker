@@ -6,12 +6,13 @@
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
    [reagent-forms.core :refer [bind-fields]]
-   [ajax.core :refer [POST, GET]]
+   [ajax.core :refer [POST, GET, DELETE]]
    [milkilo-tracker.pages.components :refer [date-input
                                              cancel row
                                              entry-field
                                              entry-type-selector]]
    [milkilo-tracker.utils :refer [log get-entry-info]]
+   [secretary.core :refer [dispatch!]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
 
@@ -58,8 +59,7 @@
             {:params (@this-entry :entry)
              :handler
              (fn [resp]
-               (.log js/console (str "Response: "
-                                     resp))
+               (.log js/console (str "Response: " resp))
                ;; Remove old entry from view
                (if-let [old-entry (session/get :selected-entry)]
                  (session/update-in!
@@ -69,6 +69,22 @@
                ;; Add new entry returned from backend
                (session/update-in! [:entries] conj resp)
                (session/put! :saved? true))})))))
+
+(defn delete-entry [this-entry]
+  (fn []
+    (if (.confirm js/window "Haluatko varmasti poistaa?")
+      (DELETE
+       (str js/context "/entry")
+       {:params this-entry ;;(@this-entry :entry)
+        :handler
+        (fn [resp]
+          (.log js/console (str "Response: " resp))
+          ;; Remove deleted entry
+          (session/update-in!
+           [:entries]
+           (fn [all-entries resp]
+             (remove #(= (dissoc resp :site_id) %) all-entries)) resp)
+          (dispatch! "#/"))}))))
 
 (def initial-entry
   ;; Initialize new entry with current date
@@ -92,7 +108,12 @@
         entry-types (session/get :entry-types)]
     (fn []
       [:div
+
        [bind-fields [:div
+                     (if-let [selected-entry (session/get :selected-entry)]
+                       ;; Add siteid
+                       [:button.btn.btn-lg.btn-cancel.btn-danger.top-margin.btn-block
+                        {:onClick (delete-entry (@this-entry :entry))} "Poista"])
                      [row "Päivämäärä"
                       (date-input)]
                      entry-type-selector

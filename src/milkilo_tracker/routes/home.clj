@@ -46,6 +46,8 @@
 
 (defn save-entry [entry]
   "Save entry or update existing one with id if user has access."
+  (println "Try insert/update")
+  (println entry)
   (if (user-has-access entry)
     (if (entry :id)
       (do
@@ -61,6 +63,8 @@
       {:status 500})))
 
 (defn delete-entry [entry]
+  (println "Try delete")
+  (println entry)
   (if (user-has-access entry)
     (do
       (println "Deleting:")
