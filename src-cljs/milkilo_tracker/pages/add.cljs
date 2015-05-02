@@ -11,11 +11,9 @@
                                              cancel row
                                              entry-field
                                              entry-type-selector]]
-   [milkilo-tracker.utils :refer [log get-entry-info]]
-   [secretary.core :refer [dispatch!]]
+   [milkilo-tracker.utils :refer [log get-entry-info delete-entry]]
    [cljs-time.local :refer [local-now]]
    [cljs-time.core :refer [day month year]]))
-
 
 (defn validate-entry [entry]
   "Input validation. Returns true if okay. Else returns map with :error
@@ -69,22 +67,6 @@
                ;; Add new entry returned from backend
                (session/update-in! [:entries] conj resp)
                (session/put! :saved? true))})))))
-
-(defn delete-entry [this-entry]
-  (fn []
-    (if (.confirm js/window "Haluatko varmasti poistaa?")
-      (DELETE
-       (str js/context "/entry")
-       {:params this-entry ;;(@this-entry :entry)
-        :handler
-        (fn [resp]
-          (.log js/console (str "Response: " resp))
-          ;; Remove deleted entry
-          (session/update-in!
-           [:entries]
-           (fn [all-entries resp]
-             (remove #(= (dissoc resp :site_id) %) all-entries)) resp)
-          (dispatch! "#/"))}))))
 
 (def initial-entry
   ;; Initialize new entry with current date

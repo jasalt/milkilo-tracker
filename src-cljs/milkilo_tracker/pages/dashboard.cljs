@@ -5,8 +5,8 @@
    [secretary.core :as secretary]
    [clojure.string :as str]
    [milkilo-tracker.utils :refer [get-cookie log logout
-                                  get-entry-info]]
-   ))
+                                  get-entry-info
+                                  delete-entry]]))
 
 (defn dashboard-page []
   [:div
@@ -23,19 +23,19 @@
        [:div.panel.panel-default
         [:div.panel-heading
          [:h4 "Edelliset merkinnät:"]]
-        [:div.panel-body 
-         "Testaustarkoituksiin näytetään nämä kaikki"]
+        [:div.panel-body
+         "Tarkastele ja poista edellisiä merkintöjä"]
         [:div.list-group
          (for [entry last-entries]
            ^{:key entry}
            (let [title (:name (entry-types (entry :type)))
                  date (:date entry)]
-             [:a.list-group-item.clearfix
-              {:on-click #(secretary/dispatch! (str "#/edit-entry/" (entry :id)))}
-              [:h3.pull-right (str (entry :value))]
-              [:span.badge.pull-left {:style {:font-size "2em"}} (str title)]
-              [:br]
-              [:h3 (str (date :day)"."(date :month)"."(date :year))]]))]]))
+             [:div.list-group-item
+              [:div.clearfix {:style {:clear "both"}}
+              [:span.badge.pull-left {:style {:font-size "1.3em"}} (str title " ")]
+               [:button.btn.btn-danger.pull-right
+                {:onClick (delete-entry (assoc entry :site_id ((session/get :site) :id)))} "X"]]
+              [:p (str (date :day)"."(date :month)"."(date :year)) " - "[:strong (str (entry :value))]]]))]]))
 
    (if-let [site (session/get :site)]
      [:div
