@@ -13,13 +13,15 @@
   (.addGraph
    js/nv
    (fn []
-     (let [chart (.. js/nv -models lineChart
-                     (margin #js {:left 100})
-                     (useInteractiveGuideline true)
-                     (transitionDuration 350)
-                     (showLegend true)
-                     (showYAxis true)
-                     (showXAxis true))]
+     (let
+         [chart
+          (.. js/nv -models lineChart
+              (margin #js {:left 20})
+              (useInteractiveGuideline true)
+              (transitionDuration 350)
+              (showLegend true)
+              (showYAxis true)
+              (showXAxis true))]
        (.. chart -xAxis
            (axisLabel "x-axis")
            (tickFormat (.format js/d3 ",r")))
@@ -40,7 +42,11 @@
 (def dashboard-page-did-mount
   (with-meta identity
     {:component-did-mount #(do
-                             (.log js/console "Dashboard mounted")
+                             (.log js/console "dashboard-did-mount")
+                             (mount-graph)
+                             )
+     :component-did-update #(do
+                              (.log js/console "dashboard-did-update")
                              (mount-graph)
                              )}))
 
