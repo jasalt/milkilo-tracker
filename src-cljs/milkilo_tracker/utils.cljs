@@ -30,8 +30,7 @@
 (defn delete-entry [this-entry]
   (fn []
     (if (.confirm js/window "Haluatko varmasti poistaa?")
-      (DELETE
-       (str js/context "/entry")
+      (DELETE "/entry"
        {:params this-entry ;;(@this-entry :entry)
         :handler
         (fn [resp]
