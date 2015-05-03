@@ -6,10 +6,13 @@
    [reagent.core :as reagent :refer [atom]]
 
    [milkilo-tracker.utils :refer [log]]
-   [milkilo-tracker.history :as history]
    [figwheel.client :as fw]
 
-   [secretary.core :as secretary :refer-macros [defroute]]
+   [secretary.core :as secretary
+    :refer [dispatch!]
+    :refer-macros [defroute]]
+   
+   [milkilo-tracker.history :as history]
    [ajax.core :refer [GET]]
    
    [milkilo-tracker.pages.dashboard  :refer [dashboard-page]]
@@ -22,7 +25,7 @@
 
 (defroute dashboard-path "/" []
   (session/put! :selected-entry nil)
-  (log "going to dash")
+  (log "Core: going to dashboard")
   (session/put! :current-page dashboard-page)
   (session/put! :bread nil))
 
@@ -65,21 +68,20 @@
 
 (defn init! []
   "Initial application state"
-  (.initializeTouchEvents js/React true)
   (js/console.log "(core/init!)")
   (enable-console-print!)
   
+  (.initializeTouchEvents js/React true)
+  
   (GET "/entries" {:handler init-data-handler})
 
-  (session/put! :current-page dashboard-page)
+  (secretary/set-config! :prefix "#")
+  (history/hook-browser-navigation!)
+
   (session/put! :bread nil)
   (reagent/render-component [page] (.getElementById js/document "app"))
   (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
 
-  (secretary/set-config! :prefix "#")
-
-  (history/hook-browser-navigation!)
-  
   ;; Run unit tests during development.
   ;; TODO if dev flag set?
   ;; (t/run-tests 'milkilo-tracker.pages.add)
@@ -87,5 +89,4 @@
 
 ;; Development utilities
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
-           :on-jsload (fn []
-                        (init!))})
+           :on-jsload (fn [] (init!))})
