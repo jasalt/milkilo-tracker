@@ -56,7 +56,7 @@
      [:div
       [:br]
       [:a.btn.btn-lg.btn-primary.btn-block
-       {:href "#/add-entry"} "Lisää uusi merkintä"]
+       {:href "#/add-entry"} "Uusi merkintä"]
       [:br]
       (if-let [entries (session/get :entries)]
         ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
@@ -67,9 +67,7 @@
             [:div#d3-node {:style {:width "400" :height "200"}} [:svg ]]]
            [:div.panel.panel-default
             [:div.panel-heading
-             [:h4 "Edelliset merkinnät:"]]
-            [:div.panel-body
-             "Tarkastele edellisiä merkintöjä"]
+             [:h4 "Edelliset merkinnät"]]
             [:div.list-group
              (doall
               (for [entry last-entries]

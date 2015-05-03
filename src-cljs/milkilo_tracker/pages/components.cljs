@@ -10,7 +10,7 @@
   [:ol.breadcrumb
    [:li.active
     ;; TODO deactivate link at #/
-    [:a {:href "#/"} "Dashboard"]]
+    [:a {:href "#/"} "Milkilo"]]
    (if-let [bread (session/get :bread)]
      [:li.active bread])])
 

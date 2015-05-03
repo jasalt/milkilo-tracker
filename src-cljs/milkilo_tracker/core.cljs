@@ -5,7 +5,7 @@
    [milkilo-tracker.session :as session]
    [reagent.core :as reagent :refer [atom]]
 
-   [milkilo-tracker.utils :refer [log]]
+   [milkilo-tracker.utils :refer [log redirect!]]
    [figwheel.client :as fw]
 
    [secretary.core :as secretary
@@ -66,6 +66,11 @@
     (session/put! :entries (site-data :entries))
     (session/put! :site (dissoc site-data :entries))))
 
+(defn render-view []
+  (reagent/render-component [page] (.getElementById js/document "app"))
+  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
+  )
+
 (defn init! []
   "Initial application state"
   (js/console.log "(core/init!)")
@@ -79,14 +84,18 @@
   (history/hook-browser-navigation!)
 
   (session/put! :bread nil)
-  (reagent/render-component [page] (.getElementById js/document "app"))
-  (reagent/render-component [breadcrumbs] (.getElementById js/document "navbar"))
-
+  (render-view)
   ;; Run unit tests during development.
   ;; TODO if dev flag set?
   ;; (t/run-tests 'milkilo-tracker.pages.add)
   )
 
-;; Development utilities
+;; Development utilities 
 (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
-           :on-jsload (fn [] (init!))})
+           :on-jsload (fn []
+                        ;; TODO setup to work without page refresh
+                        ;;(redirect! "/#/")
+                        ;;(render-view)
+
+                        (redirect! "/")
+                        )})

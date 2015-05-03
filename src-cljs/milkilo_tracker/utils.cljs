@@ -11,6 +11,9 @@
   (.get goog.net.cookies (name key))
   )
 
+(defn redirect! [loc]
+  (set! (.-location js/window) loc))
+
 (defn log
   ([val desc]
   (js/console.log desc)
