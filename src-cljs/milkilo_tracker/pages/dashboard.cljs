@@ -52,44 +52,43 @@
 
 (defn dashboard-page []
   (fn []
-    [dashboard-page-did-mount ;; Wrapper
-     [:div
-      [:br]
-      [:a.btn.btn-lg.btn-primary.btn-block
-       {:href "#/add-entry"} "Uusi merkintä"]
-      [:br]
-      (if-let [entries (session/get :entries)]
-        ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
-        (let [last-entries entries
-              entry-types (session/get :entry-types)]
-          [:div
-           [:div.well.well-sm
-            [:div#d3-node {:style {:width "400" :height "200"}} [:svg ]]]
-           [:div.panel.panel-default
-            [:div.panel-heading
-             [:h4 "Edelliset merkinnät"]]
-            [:div.list-group
-             (doall
-              (for [entry last-entries]
-                ^{:key entry}
-                (let [title (:name (entry-types (entry :type)))
-                      date (:date entry)]
-                  [:div.list-group-item
-                   [:div.clearfix {:style {:clear "both"}}
-                    [:span.badge.pull-left {:style {:font-size "1.3em"}} (str title " ")]
-                    [:button.btn.btn-danger.pull-right
-                     {:onClick (delete-entry (assoc entry :site_id ((session/get :site) :id)))} "X"]]
-                   [:p (str (date :day)"."(date :month)"."(date :year)) " - "[:strong (str (entry :value))]]])))]]]))
+    [:div
+     [:br]
+     [:a.btn.btn-lg.btn-primary.btn-block
+      {:href "#/add-entry"} "Uusi merkintä"]
+     [:br]
+     (if-let [entries (session/get :entries)]
+       ;; TODO show a couple last entries when CLJS subvec reverse bug is fixed.
+       (let [last-entries entries
+             entry-types (session/get :entry-types)]
+         [:div
+          ;; [:div.well.well-sm
+          ;;  [:div#d3-node {:style {:width "400" :height "200"}} [:svg ]]]
+          [:div.panel.panel-default
+           [:div.panel-heading
+            [:h4 "Edelliset merkinnät"]]
+           [:div.list-group
+            (doall
+             (for [entry last-entries]
+               ^{:key entry}
+               (let [title (:name (entry-types (entry :type)))
+                     date (:date entry)]
+                 [:div.list-group-item
+                  [:div.clearfix {:style {:clear "both"}}
+                   [:span.badge.pull-left {:style {:font-size "1.3em"}} (str title " ")]
+                   [:button.btn.btn-danger.pull-right
+                    {:onClick (delete-entry (assoc entry :site_id ((session/get :site) :id)))} "X"]]
+                  [:p (str (date :day)"."(date :month)"."(date :year)) " - "[:strong (str (entry :value))]]])))]]]))
 
-      (if-let [site (session/get :site)]
-        [:div
-         [:h4 "Puhdistamo (testiarvo)"]
-         [:p (str site)]]
-        [:p "Puhdistamo puuttuu (tai sen tietoja ladataan)"])
+     (if-let [site (session/get :site)]
+       [:div
+        [:h4 "Puhdistamo (testiarvo)"]
+        [:p (str site)]]
+       [:p "Puhdistamo puuttuu (tai sen tietoja ladataan)"])
 
-      (let [before-at (first (str/split (get-cookie "email") "%40"))
-            name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
-        [:a.text-center {:on-click #(let [message "Oletko varma että haluat kirjautua ulos?"
-                                          dialog-result (.confirm js/window message)]
-                                      (when dialog-result (logout)))}
-         [:h4 [:small (str "Kirjaudu ulos ("name")")]]])]]))
+     (let [before-at (first (str/split (get-cookie "email") "%40"))
+           name (str (str/join " " (map str/capitalize (str/split before-at "."))))]
+       [:a.text-center {:on-click #(let [message "Oletko varma että haluat kirjautua ulos?"
+                                         dialog-result (.confirm js/window message)]
+                                     (when dialog-result (logout)))}
+        [:h4 [:small (str "Kirjaudu ulos ("name")")]]])]))

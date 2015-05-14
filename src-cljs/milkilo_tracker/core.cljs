@@ -91,11 +91,11 @@
   )
 
 ;; Development utilities 
-(fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
-           :on-jsload (fn []
-                        ;; TODO setup to work without page refresh
-                        ;;(redirect! "/#/")
-                        ;;(render-view)
+;; (fw/start {:websocket-url "ws://localhost:3449/figwheel-ws"
+;;            :on-jsload (fn []
+;;                         ;; TODO setup to work without page refresh
+;;                         ;;(redirect! "/#/")
+;;                         ;;(render-view)
 
-                        (redirect! "/")
-                        )})
+;;                         (redirect! "/")
+;;                         )})
